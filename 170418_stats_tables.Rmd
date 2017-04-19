@@ -1,0 +1,71 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r, results = 'asis'}
+
+library(tidyverse)
+
+
+load('~/Documents/Projects/Cascading Effects/ergm_data.RData')
+
+suppressMessages(stargazer::stargazer(fit.null1, fit.w1,
+    align = F, header = F,  out.header = T, type = 'html',digits = 2,
+    float = F, no.space = T, single.row = T, font.size = "small",
+    title = "Table SM2. Exponential random graph models for shared drivers (\textit{forks})",
+    covariate.labels = c("Non-zero", "Sum", "Land use", "Ecosystem type", "Ecosystem processes",
+                         "Provising services", "Regulating services", "Cultural services",
+                         "Human wellbeing", "Spatial scale", "Temporal scale", "Reversibility",
+                         "Evidence type"),
+    dep.var.labels = "Forks")
+    )
+
+
+```
+
+
+```{r,  results = 'asis'}
+suppressMessages(stargazer::stargazer(fit.null1, fit.w1,
+    align = F, header = F,  out.header = T, type = 'html',digits = 2,
+    float = F, no.space = T, single.row = T, font.size = "small",
+    title = "Table SM2. Exponential random graph models for shared drivers (\textit{forks})",
+    covariate.labels = c("Non-zero", "Sum", "Land use", "Ecosystem type", "Ecosystem processes",
+                         "Provising services", "Regulating services", "Cultural services",
+                         "Human wellbeing", "Spatial scale", "Temporal scale", "Reversibility",
+                         "Evidence type"), apply.coef = exp, apply.se = exp, apply.ci = exp, apply.p = exp, apply.t = exp,
+    dep.var.labels = "Forks")
+    )
+```
+
+
+```{r, results = 'asis'}
+
+suppressMessages(stargazer::stargazer( fit.null2, fit.w2,
+    align = F, header = F,  out.header = T, type = 'html', digits = 2,
+    float = F, no.space = T, single.row = T, font.size = "small",
+    title = "Table SM3. Exponential random graph models for \textit{domino effects}",
+    covariate.labels = c("Non-zero", "Sum", "Land use", "Ecosystem type", "Ecosystem processes",
+                         "Provising services", "Regulating services", "Cultural services",
+                         "Human wellbeing", "Spatial scale", "Temporal scale", "Reversibility",
+                         "Evidence type"),
+    dep.var.labels = "Domino effects")
+    )
+
+```
+
+```{r, results = 'asis'}
+suppressMessages(stargazer::stargazer(fit.null3, fit.w3,
+    align = F, header = F,  out.header = T, type = 'html', digits = 2,
+    float = F, no.space = T, single.row = T, font.size = "small",
+    title = "Table SM4. Exponential random graph models for \textit{inconvenient feedbacks}",
+    covariate.labels = c("Non-zero", "Sum", "Land use", "Ecosystem type", "Ecosystem processes",
+                         "Provising services", "Regulating services", "Cultural services",
+                         "Human wellbeing", "Spatial scale", "Temporal scale", "Reversibility",
+                         "Evidence type"),
+    dep.var.labels = "Inconvenient feedbacks")
+    )
+
+```
+
