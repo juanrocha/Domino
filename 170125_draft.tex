@@ -1,0 +1,982 @@
+\documentclass[9pt,]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
+\hypersetup{unicode=true,
+            pdftitle={Cascading effects of critical transitions in social-ecological systems},
+            pdfauthor={Juan C. Rocha},
+            pdfkeywords={regime shifts, cascading effects, tele-connections, networks},
+            colorlinks=true,
+            linkcolor=blue,
+            citecolor=blue,
+            urlcolor=blue,
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Cascading effects of critical transitions in social-ecological systems}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Juan C. Rocha}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{April 17, 2017}
+
+\usepackage{dcolumn}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Critical transitions in nature and society are likely to occur more
+often and severe as humans increase they pressure on the world
+ecosystems. Yet it is largely unknown how these transitions will
+interact, whether the occurrence of one will increase the likelihood of
+another, and whether these potential teleconnections (social and
+ecological) correlate critical transition in distant places. Here we
+present a framework for exploring three types of potential cascading
+effects of critical transitions\(:\) forks, domino effects and
+inconvenient feedbacks. Drivers and feedback mechanisms are reduced to a
+network form that allow us to explore drivers co-occurrence (forks).
+Sharing drivers is likely to increase correlation in time or space among
+critical transitions but not necessarily interdependence. Domino effects
+occur when the feedback processes of one regime shifts affect the
+drivers of another, creating a one way dependence. Inconvenient
+feedbacks were identified by mapping new circular pathways on coupled
+networks that have not been previously reported. The method serves as a
+platform for hypothesis exploration of plausible new feedbacks between
+critical transitions in social-ecological systems; it helps to scope
+structural interdependence and hence an avenue for future modelling and
+empirical testing of regime shifts coupling.
+\end{abstract}
+
+\subsection{Introduction}\label{introduction}
+
+Critical phenomena has been documented on a wide variety of systems from
+climate, finance, language, neurological diseases, ecosystems and
+ancient societies\textsuperscript{1,2}. A large set of critical
+transitions in social-ecological systems has been
+identified\textsuperscript{3}. As human pressures increase on the
+planet, these transitions might become more acute and frequent than
+previously thought\textsuperscript{4}. Research on critical transitions
+in social-ecological systems is often confined to well defined domains
+of expertise (e.g.~limnology, urbanism, climate science), adopting
+either an empirical, modelling\textsuperscript{5} or early warnings
+indicator approach\textsuperscript{6,7}. These approaches require a deep
+knowledge of the causal structure of the system or a high quality
+spatial-temporal data respectively. These requirements have confined the
+body of research to the analysis of individual types of critical
+transitions rather than the potential interactions across systems. Yet,
+one of the key challenges of sustainability science is analyzing the
+diverse set of interactions across human-environmental
+systems\textsuperscript{8}. The aim of this paper is developing a
+framework for exploring potential interactions amongst critical
+transitions in social-ecological systems, so called regime shifts.
+
+Regime shifts are large, abrupt and persistent changes in the function
+and structure of systems\textsuperscript{9,10}. They present a challenge
+for ecological management and governance because they are very difficult
+to predict\textsuperscript{11,12} and reverse\textsuperscript{9}, while
+having substantial impacts on the availability or ecosystem services
+that societies rely upon\textsuperscript{13}. A regime is the region of
+the parameter space where state variables (e.g.~vegetation density,
+coral cover) fluctuate, they are also called equilibrium, alternative
+stable states, basins or domains of attraction. Systems prone to regime
+shifts have more than one alternative stable states; under similar
+parameter values they can suddenly shift from one domain to another when
+critical thresholds are crossed\textsuperscript{14,15}. Change in slow
+variables (e.g.~temperature in coral reefs) often shrinks the basin of
+attraction, making the system more susceptible to shifting when exposed
+to shock events (e.g.~hurricanes) or the action of external
+drivers\textsuperscript{6}.
+
+How different regime shifts might be interconnected is largely unknown
+and a key frontier of research\textsuperscript{8,16}. The concept of
+cascading effect has been used in two seemingly different contexts: i)
+when referring to the effect of an abrupt change on one species
+spreading through food webs\textsuperscript{17,18}; and ii) when local
+interactions are magnified by feedbacks that are reinforced across
+scales (e.g.~erosion or fire)\textsuperscript{19,20}. What these
+interpretations have in common is that both refer to networked systems
+(e.g.~foodwebs, landscape mosaics) where a signal (e.g.~fire, species
+collapse, disease) spreads broadly or is contained locally depending
+upon the system's connectivity. The units of these networks are usually
+species or sets of spatial units that represent ecosystems. Here we
+broaden the cascading effects concept to networks of regime shifts, when
+regime shifts can be represented as causal networks of drivers and
+underlying feedback mechanisms or processes (see methods).
+
+To explore interconnections amongst regime shifts the units of analysis
+should be regime shifts, and teleconnections\textsuperscript{8} or
+cross-scale interactions\textsuperscript{20} should be signals strong
+enough to couple them. In this context, cascading effects could occur if
+i) two regime shifts are affected by the same driving forces inducing
+synchronization of the shift (a fork)\textsuperscript{21}, ii) the
+occurrence of one regime shift affects the drivers of other regime shift
+(a domino effect)\textsuperscript{6,16,22} or iii) when two regime
+shifts dynamics generate new inconvenient (not previously identified)
+feedback dynamics\textsuperscript{8} by reinforcing or damping each
+other drivers\textsuperscript{22}. Here we present a graphical framework
+to explore such hypothetical interconnections.
+
+\subsection{Methods}\label{methods}
+
+\textit{Data:} The \href{www.regimeshifts.org}{regime shifts database}
+is to our knowledge the largest online repository of regime shifts in
+social-ecological systems (Fig. 1). It offers syntheses and a regime
+shift analysis for over 30 generic types of regime shifts,
+\textgreater{} 300 case studies based on literature review of
+\textgreater{} 1000 scientific papers\textsuperscript{3}. The database
+decomposes regime shifts in terms of describing their regimes, drivers,
+feedback mechanisms, impacts on ecosystem services, and management
+options. It provides a set of categorical variables about impacts,
+scales, evidence type; as well as a causal loop diagram that summarizes
+the feedback structure of each system\textsuperscript{3}. When possible,
+entries to the regime shifts database have been peer reviewed by an
+expert on the topic to ensure quality and accuracy of its
+contents\textsuperscript{3}.
+
+Through synthesis of current scientific literature, the regime shifts
+database offers causal loop diagrams as a summary of the driving
+processes and underlying feedbacks of regime shifts. They represent a
+collection of causal mechanisms that scientist have reported in their
+narratives: both empirical (what they choose to sample) or theoretical
+(what they choose to model). Causal loop diagrams (CLDs) consist of
+variables connected by arrows denoting causal
+influence\textsuperscript{23}. Each relationship must have a positive
+(+) or negative (-) polarity that represents the effect of the dependent
+variable given change on the independent
+variable\textsuperscript{23,24}. Although the functional form that
+underlies each relationship is not necessarily known, positive
+relationships are proportional while negative are inverse proportional
+\emph{ceteris paribus}. CLDs assume that the causal relationships
+captured by links are monotonic, while non-linearities are captured by
+links sets, thus self-loops are not allowed. Feedback loops are the
+basic structural units of the diagram and emerge by connecting variables
+in closed directed paths (cycles). Feedback means that once a signal
+enters the loop, some part of the output is feed back to the input,
+resulting on amplification or dampening of its own signal. Feedbacks can
+be reinforcing if the overall polarity of its links is positive, or
+balancing if negative. Reinforcing feedbacks are usually responsible for
+behaviours that drives the system out of equilibrium, while balancing
+feedbacks are responsible for near equilibrium dynamics such as
+oscillations and delays. Note that causal links do not describe the
+behaviour of variables, only the structure of the system: they describe
+what would happen if there were changes\textsuperscript{23}. CLDs were
+curated in the regime shifts database in a way that variables names are
+consistent (e.g.~agriculture and cropping is kept as `agriculture'), and
+feedback loops comparable (e.g.~albedo in the rainfores, Arctic or
+Antarctic regime shifts is the same feedback).
+
+\emph{Networks:} Each causal loop diagram was turned into a network by
+creating the adjacency matrix \(M\), where \(M_{i,j}\) is \(1\) if there
+is a connection or zero otherwise. Link weights \(w_{i,j}\) represent
+link polarity taking \(-1\) if the relationship is expected to be
+inverse proportional, or \(1\) when proportional. In each network, node
+attributes were coded if a node belongs to a feedback loop -a k-cycle in
+the network- or not. The later is then by definition a driver, an
+independent variable whose dynamics are not affected by the dynamics of
+the system at hand. Note that networks in ecology usually describe inter
+species interactions such as predation or mutualism. Our approach is
+different from what has been done in ecology. Here a network describe a
+set of processes, both biotic and abiotic, that can govern ecosystem
+regime shifts dynamics. Our approach is inspired by other network
+applications to processes such as cells metabolic networks or the
+network of human diseases, where a process is not captured by a link
+type (e.g.~predation) but by a collection of link interactions (e.g.~the
+Krebs cycle). Thus, individual species are not taken into consideration,
+bur rather their functional role at the aggregated ecosystem scale
+(e.g.~herbivory).
+
+\begin{figure}
+
+{\centering \includegraphics{170125_draft_files/figure-latex/Fig1-1} 
+
+}
+
+\caption{Regime shifts around the world. Large points show generic types of regime shifts (n = 35) while small points are case studies (n=324).}\label{fig:Fig1}
+\end{figure}
+
+\emph{Forks:} correspond to regime shifts that share common drivers (Fig
+2a). This type of connection is expected to increase the likelihood of
+synchronization in space and time of different regime shift phenomena,
+both in terms of cases (e.g.~two different coral reefs) or regime shift
+types (e.g.~thermokrast lakes and peatland transitions both driven by
+climate change). Rocha \emph{et al.}\textsuperscript{21} used a
+bipartite network of drivers and regime shifts to study this type of
+connections. Here we replicate their analysis with an updated version of
+the regime shifts database (N=30). Drivers are variables outside
+feedback mechanisms and are linked to regime shifts nodes if there is a
+reference in the scientific literature suggesting
+causality\textsuperscript{21}. Categorical variables from the regime
+shifts database were used as node attributes: biome type for regime
+shift nodes and scale of management for driver nodes. The statistical
+models (see below) were performed for the case of forks on the one-mode
+network of regime shifts sharing drivers.
+
+\emph{Domino effects} occur when the occurrence of a regime shift can
+increase or decrease the likelihood of other regime shift occurring. We
+explore potential domino effects by using the full causal loop diagrams
+as networks. The algorithm for identifying domino effects takes the
+adjacency matrix of two given regime shifts \(M_1\) and \(M_2\) and
+identifies all nodes \(n \in M_1 \cap M_2\) such that \(n\) belong to a
+feedback in \(M_1\) but is a driver in \(M_2\). Thus, set differences
+between causal pathways suggest missing drivers, and set intersection
+between causal pathways and feedback loop nodes indicate potential
+domino effects (Fig 2a). By iterating this simple algorithm we derived
+how many different pathways exist between every pair-wise combination of
+regime shifts. The resulting non-symmetrical matrix represents a
+directed network with regime shifts as nodes and link weights as the
+number of pathways used for statistical analysis (below).
+
+\emph{Inconvenient feedbacks:} are cycles or feedback loops that might
+connect two different regime shifts; and if strong enough, it could
+amplify or dampen the coupled dynamics. This type of connection is often
+disregarded because research on regime shifts usually focus on one
+system at the time; data collection and hypothesis testing for coupled
+systems has largely remained unexplored. An inconvenient feedback occurs
+when the dynamics of one regime shift affects a variable that belongs in
+turn to another regime shit and vice versa (Fig 2a). It means that two
+regime shifts could reinforce or dampen each other. Here we explore
+inconvenient feedbacks by pair-wise comparison of causal networks.
+First, the feedback loops (or k-cycles) are counted by feedback length
+\(k\) for each regime shift \(M_1\) and \(M_2\) separately. Then the
+cycle count is applied to the composite network \(M_{1,2}\) of the two
+regime shifts. The difference between the k-cycles in the composite
+network \(M_{1,2}\) and the k-cycles on the individual networks \(M_1\)
+and \(M_2\) are the inconvenient feedbacks that emerge when the two
+causal networks are joined. By iterating the same procedure to all
+pair-wise combinations of regime shifts a symmetric directed matrix is
+obtained that is then used on the statistical analysis.
+
+\emph{Statistical analysis:} We study what type of micro configurations
+that better explain the global patterns of the network by applying
+exponential random graph models\textsuperscript{25}, and comparing them
+with a naïve ordinary least squares regression that does not take into
+account network structure. The response variable for forks is the number
+of drivers shared, for domino effects is the number of directed pathways
+that connect two regime shifts, and for inconvenient feedbacks it is the
+number of k-cycles that emerge on the joined network that do not exist
+on the separate causal networks. The explanatory variables are modeled
+as edge covariates derived from the regime shifts categorical variables
+(N=92). We calculated the similarity of each pair-wise combination of
+regime shifts in the database regarding categorical attributes such as
+(i) land use under which the regime shift occur, (ii) ecosystem type,
+impacts on (iii) ecosystem processes, (iv) provisioning services, (v)
+regulating services, (vi) cultural services, (vii) human wellbeing; as
+well as (viii) the spatial scale at which the regime shift occur, (ix)
+the temporal scales, (x) reversibility, and (xi) evidence
+type\textsuperscript{3,21}. For all 92 categorical variables encoded,
+the database reports presence or absence (0,1) allowing us to calculate
+the Jaccard index and use it as a proxy of how similar two regime shifts
+are. To facilitate the interpretation of statistical models, the Jaccard
+distance was rescaled (\(1 - J_{d}\)) so equivalent regime shifts score
+1 and complete dissimilar zero. Note that the resulting distance matrix
+for all cases contains values \(x_{i,j}\) regardless if the link exist
+on the networks used as response. For this reason we also fitted naïve
+OLS models to compare what can be explained by similarity alone, and
+what is explained by the cascading effects network types (forks,
+dominos, and inconvenient feedbacks). Note also that these networks
+contain all valued links of count data, therefore the specification for
+the exponential random graph models follow Krivitsky\textsuperscript{26}
+and a Poisson reference distribution. All software used is under open
+access license\textsuperscript{27} and run under the R statistical
+language\textsuperscript{30}.
+
+\begin{figure}
+
+{\centering \includegraphics{170125_draft_files/figure-latex/Fig2-1} 
+
+}
+
+\caption{Cascading effects. a) Conceptual diagram of the framework proposed. b) Causal loop diagram example for the regime shift on peatlands transitions. Positive links are depicted as blue arrows, negative links as red arrows, drivers are variables outside feedback loops (in yellow), while variables inside feedbacks are grey. Both links and vertices are scaled according to the number of feedback loops that where they are involved}\label{fig:Fig2}
+\end{figure}
+
+\subsection{Results}\label{results}
+
+\begin{figure}
+
+{\centering \includegraphics{170125_draft_files/figure-latex/Fig3-1} 
+
+}
+
+\caption{Bipartite network of sharing drivers shows fork type of cascading effects. Updated version from Rocha et al (2015) with 30 regime shifts.}\label{fig:Fig3}
+\end{figure}
+
+A preliminary exploration of \emph{fork} type of connections was
+introduced by Rocha et al\textsuperscript{21} when asking the question
+of what are the main drivers of regime shifts globally. While their
+focus was on drivers importance, here we updated their analysis to 30
+regime shifts and focus on what aspects increase the likelihood of two
+regime shifts sharing the same drivers (forks). Figure 3 presents the
+bipartite network composed by 79 drivers and 30 regime shifts. Regime
+shifts in this network are more likely to share drivers when they occur
+on similar ecosystem types and impact similar regulating services (p
+\textless{}\textless{} 0.001, SM Tables 1,2). The odds of two regime
+shifts sharing drivers is \(exp(-1.024) = 0.35\), while the odds of them
+sharing the same ecosystem type is \(exp(-0.582) = 0.55\) times higher.
+This likelihood is also affected by occurring on similar land use,
+impacting similar cultural services and aspects of human wellbeing,
+occurring at similar spatial scales (but not temporal ones), as well as
+having similar types of evidence and reversibility (p \textless{} 0.05,
+SM Table 2). Interestingly, while the likelihood of having a non-zero
+link is significant, the number of drivers shared is not. The negative
+coefficient on the \texttt{non-zero} term indicates zero inflation, this
+is that most of the interaction occur through the link weights as
+opposed to the number of links, confirming previous
+results\textsuperscript{21} for clustering coefficient and co-occurrence
+index on the bipartite network. The naïve OLS approach render slightly
+similar results, while reversibility, provisional and regulating
+services are not significant, similarity on temporal scales is
+correlated to number of drivers shared. Yet, the amount of variance
+explained by the OLS model is relatively low (adjusted \(R^2\)
+\textasciitilde{} 0.3).
+
+Domino effects were investigated by searching variables that belong to
+feedback mechanisms in one regime shift and at the same time can be
+drivers of another (Fig 4, see a worked example in SM Fig 2). While most
+of pair-wise combinations of regime shifts do not have pathways that can
+result on domino effects, the maximum number of pathways found was
+\(4\). The regime shifts that contain variables that will in turn be
+drivers of other regime shifts typically have large spatial scales and
+slow temporal scales: thermohaline circulation collapse, river channel
+change, monsoon weakening, and Greenland ice sheet collapse. On the
+other hand, regime shifts that receive the influence are often marine
+and their time and space dynamics contained more locally: kelps
+transitions, marine eutrophication, mangroves transitions, coral
+transitions and fisheries collapse. The statistical models confirm this
+observation. Both, having a link and having a high number of pathways
+are significant. The odds of having higher numbers of domino effects are
+increased when regime shifts impact similar regulating services and
+similar aspects of human well being (p \textless{} 0.001). The OLS
+approach pick up weak signals for ecosystem type and reversibility (p
+\textgreater{} 0.01) but without the network structure the power of the
+OLS model is low (adjusted \(R^2= 0.018\)).
+
+In order to identify potential inconvenient feedbacks we merged causal
+networks and found that most inconvenient feedbacks occur at higher
+feedback length (Fig 5). Not all regime shifts are connected by
+inconvenient feedbacks, but when inconvenient feedbacks do occur they
+tend to be on the right side of the distribution at longer cycle
+lengths. Even for small networks, the number of cycles tend to increase
+exponentially with respect to the increase of links. Although
+computationally intensive, the search for k-cycles is feasible in our
+networks given the small size and relative sparse structures. In fact,
+the maximum cycle length \(k\) is bounded by the size of the network.
+Out of the 435 coupled networks analysed, the maximum feedback length
+was 56. The statistical analysis shows that there is a zero inflation on
+the resulting matrix (fewer links that one would expect by random), but
+when they do occur, the odds of having multiple feedbacks coupling two
+regime shifts is 7.33 times higher. The odds of two regime shifts been
+connected through inconvenient feedbacks increase if the pair of regime
+shifts occur in similar land uses, impact similar ecosystem processes,
+impact similar regulating and cultural services, and if they occur on
+similar scales in space and time (Fig 5, SM Table 2, p \textless{}
+0.001).
+
+In summary, we have identified structural dependencies that can give
+rise to cascading effects among different regime shifts. The topological
+structure of the drivers and feedback mechanisms underlying the
+occurrence of regime shifts allows us to explore three types of
+cascading effects. Figure 6 summarizes the results of our exploration by
+indicating how many of these types are plausible. While regime shifts in
+cities (sprawling versus dense growth) is not reported to be affected by
+any cascading effect with the regime shifts in our dataset, other regime
+shifts such as kelps transitions are often subject to the three types of
+interconnections. Of particular importance, the weakening of the Indian
+Monsoon, primary production in the Arctic ocean, seagrass transitions,
+soil salinization, bivalves collapse and the weakening of the
+thermohaline circulation are regime shifts that are expected to be
+involved in many of these couplings, at least at the structural level.
+This is, without knowledge of how strong these couplings could be or
+whether feedbacks are strong enough to produce signals that will impact
+the coupled system.
+
+\begin{figure}
+
+{\centering \includegraphics{170125_draft_files/figure-latex/Fig6-1} 
+
+}
+
+\caption{Cascading effects. Potential identified connections between regime shifts}\label{fig:Fig6}
+\end{figure}
+
+\subsection{Discussion}\label{discussion}
+
+This paper aimed to develop a framework for exploring potential
+cascading effects among critical transitions in social-ecological
+systems. A graphical approach allows us to treat regime shifts as causal
+networks composed by feedback mechanisms and drivers reported in the
+regime shifts database. Regime shifts interactions can occur when
+sharing drivers (\emph{forks}), or when \emph{domino effects} or
+\emph{inconvenient feedbacks} are strong enough to couple their
+dynamics. While their dynamic behaviour is outside the scope of this
+paper, the topological features that would allow coupling are explored
+here and serve as a conceptual devise for hypothesis exploration and
+further modeling of this coupled dynamics.
+
+Intuitively, the sharing of drivers is proposed as a potential
+mechanisms that can correlate regime shifts in space and time, but not
+necessarily make them interdependent; unless they also share feedback
+mechanisms. Time correlation is debated given that spatial heterogeneity
+can break the synchrony induced by the sharing of drivers, meaning that
+contextual settings matter for such correlations to
+emerge\textsuperscript{16}. Spatial heterogeneity is also attributed as
+mechanism that can smooth out critical transitions and soften their
+abruptness\textsuperscript{31,32}. Yet, with or without masking
+mechanism, identifying fork type of connections is useful for designing
+management strategies that target bundles of drivers instead of well
+studied variables independently, increasing the chances that managers
+will avoid several regime shifts under the influence of the same sets of
+drivers\textsuperscript{21,33}. For example, management options for
+drivers such as sedimentation, nutrients leakage, and fishing can reduce
+the likelihood of regime shifts in coastal brackish lagoons such as
+eutrophication and hypoxia, as well as coral transitions in adjacent
+coral reefs.
+
+Examples of cascading effects between regime shifts have been reported
+in the literature, but here we have developed a framework to explore
+graphically what type of mechanisms can underly different regime shifts
+coupling. For example, eutrophication is often reported as a preceding
+ecosystem state to hypoxia or dead zones in coastal
+areas\textsuperscript{34}. Similarly, hypoxic events have been reported
+to affect the resilience of coral reefs to warming and other stressors
+in the tropics\textsuperscript{35}. Moisture recycling feedback is an
+important process reported as a key mechanism on the shift from forest
+to savanna\textsuperscript{36,37} or the Indian
+monsoon\textsuperscript{38}; but also has the potential to couple
+ecosystems beyond the forest that depend on moisture recycling as an
+important water source. Changes in moisture recycling can affect
+mountain forest in the Andes\textsuperscript{40,41}, nutrient cycling in
+the ocean by affecting sea surface temperature and therefore regime
+shifts in marine food webs\textsuperscript{42}, or exacerbation of dry
+land related regime shifts\textsuperscript{20}. These examples have in
+common that a larger scale feedback affects a more localized dynamic in
+another ecosystem. However, the opposite is also possible, when the
+accumulation of small-scale process scale up and impact larger scale
+dynamics. Peters et al\textsuperscript{19} have already explore under
+this line of thinking the dynamics of the dust bowl, desertification, or
+amplification of fire dynamics. More recently it has been reported that
+increasing frequency of boreal forest fire could be actually strong
+enough to increase warming in the Arctic\textsuperscript{43,44}.
+Permafrost thawing across the Arctic peatlands can be a dangerous
+amplifier of global warming too by release of
+methane\textsuperscript{45}. Mangrove forest are expected to store less
+carbon as their areas shrink and their ability to build peat soils is
+overwhelmed by sea level rise; however it is unclear if the effect will
+be comparable as to impact global carbon budgets and further
+warming\textsuperscript{46}.
+
+While this handful of examples represent an emergent literature on
+regime shifts interactions, the framework here developed allow us to
+explore more rigorously the type of potential couplings between regime
+shifts. For our sample of 30 regime shifts reported in the regime shifts
+database, 435 possible pair-wise combinations exist. Exploring such
+search space is not a trivial task. Once the mechanisms responsible for
+one coupling is identified, it still remains to be explored the
+parameter space under which the coupling is possible. In other words,
+while the framework identifies plausible connections, modeling efforts
+and observational studies are imperative to distinguish plausible from
+probable. While the literature continue to provide examples of potential
+couplings, our framework allow us to distinguish whether the coupling is
+expected to be correlation because of sharing drivers, a one-way
+causation (the \emph{domino effect}), or a two-way interaction (the
+\emph{inconvenient feedbacks}), providing a useful set of hypotheses for
+future research.
+
+Our analysis is purely topological, it shows what potential domino
+effects or feedbacks could exist, but it does not reveals whether the
+connection is strong enough to couple the dynamic behaviour of systems
+known to be prone to regime shifts. A further area of research could ask
+under which conditions are these couplings plausible? While
+experimentation is rarely an option for testing this large scale
+ecosystem dynamics, observational studies are of prime importance as
+well as modeling efforts. Dynamic models of this type of dynamics
+require careful assumptions about parameter values as well as functional
+form of the system's equations. Alternatively, generalized modeling is a
+promising technique that does not require particular assumptions
+allowing the researcher to reach more general conclusions based on the
+systems Jacobian\textsuperscript{47--49}. Another potential avenue for
+future research is looking at how transport mechanisms couple far apart
+ecosystems. One example already mentioned is the moisture recycling
+feedback and how it can affect the water budget of areas down the
+`\emph{preceipitationshed}'\textsuperscript{50}. Another
+teleconneciton\textsuperscript{8} could be with allocation of resources
+through international trade, investigating how demand of resources in
+certain countries can shape the state space of ecosystems from the
+providing countries.
+
+\subsection{Conclusion}\label{conclusion}
+
+Non-linear dynamics are ubiquitous to a large range of social-ecological
+systems. However, how a regime shift somewhere in the world could affect
+the occurrence of another regime shift remains an open question and a
+key frontier of research. Here we have developed a graphical framework
+to explore potential cascading effects amongst regime shifts. Based on
+topological features of causal networks three type of connections have
+been proposed. Potential correlations due to sharing drivers are
+denominated \emph{forks}. While the spatio-temporal correlation can be
+masked by heterogeneity or noise, the cluster of sharing drivers serves
+to design managerial strategies. One-way directional interactions are
+denoted as \emph{domino effects} and are common in aquatic regime
+shifts. Two-way interconnections are denoted \emph{inconveneint
+feedbacks} and often encompasses cross-scale interactions. The two later
+types of cascading effects call for a more holistic approach for
+modeling and studying regime shifts, acknowledging their potential
+interdependences.
+
+\subsection{Supplementary material}\label{supplementary-material}
+
+\subsubsection{OLS models}\label{ols-models}
+
+\textbf{Table SM1.} Ordinary least square models
+
+\begingroup  \small 
+
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+\\[-1.8ex] & \multicolumn{3}{c}{paths} \\ 
+\\[-1.8ex] & (1) & (2) & (3)\\ 
+\hline \\[-1.8ex] 
+ landuse & 2.57$^{***}$ (0.56) & 0.13 (0.12) & 14.11$^{***}$ (4.38) \\ 
+  ecotype & 2.95$^{***}$ (0.41) & 0.28$^{***}$ (0.09) & $-$0.62 (3.15) \\ 
+  ecoprocess & 0.77$^{**}$ (0.38) & $-$0.16$^{*}$ (0.08) & 6.27$^{**}$ (2.96) \\ 
+  prov\_service & $-$0.15 (0.61) & $-$0.26$^{*}$ (0.13) & 3.82 (4.80) \\ 
+  reg\_service & $-$0.15 (0.47) & $-$0.05 (0.10) & 4.44 (3.59) \\ 
+  cult\_service & 1.13$^{***}$ (0.39) & 0.04 (0.09) & $-$5.34$^{*}$ (3.00) \\ 
+  hwb & 0.94$^{*}$ (0.51) & 0.10 (0.11) & 5.00 (3.97) \\ 
+  space\_scale & 0.55$^{*}$ (0.31) & $-$0.03 (0.07) & $-$5.05$^{**}$ (2.44) \\ 
+  time\_scale & 1.14$^{***}$ (0.38) & 0.03 (0.08) & 6.29$^{**}$ (3.05) \\ 
+  reversibility & 0.52 (0.33) & $-$0.19$^{***}$ (0.07) & 3.61 (2.56) \\ 
+  evidence & 2.17$^{***}$ (0.58) & $-$0.09 (0.13) & 9.24$^{**}$ (4.58) \\ 
+  Constant & $-$2.50$^{***}$ (0.52) & 0.49$^{***}$ (0.11) & $-$9.15$^{**}$ (4.05) \\ 
+ Observations & 435 & 900 & 406 \\ 
+R$^{2}$ & 0.31 & 0.03 & 0.11 \\ 
+Adjusted R$^{2}$ & 0.29 & 0.02 & 0.09 \\ 
+Residual Std. Error & 2.42 (df = 423) & 0.76 (df = 888) & 18.31 (df = 394) \\ 
+F Statistic & 17.27$^{***}$ (df = 11; 423) & 2.53$^{***}$ (df = 11; 888) & 4.48$^{***}$ (df = 11; 394) \\ 
+\hline \\[-1.8ex] 
+\textit{Notes:} & \multicolumn{3}{l}{$^{***}$Significant at the 1 percent level.} \\ 
+ & \multicolumn{3}{l}{$^{**}$Significant at the 5 percent level.} \\ 
+ & \multicolumn{3}{l}{$^{*}$Significant at the 10 percent level.} \\ 
+\end{tabular}
+
+\endgroup 
+
+\subsubsection{Exponential random graph
+models}\label{exponential-random-graph-models}
+
+\textbf{Table SM2.} Exponential random graph models for shared drivers
+(\textit{forks}) \begingroup  \small 
+
+\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-3} 
+\\[-1.8ex] & \multicolumn{2}{c}{Forks} \\ 
+\\[-1.8ex] & (1) & (2)\\ 
+\hline \\[-1.8ex] 
+ Non-zero & $-$1.86$^{***}$ (0.15) & $-$1.02$^{***}$ (0.18) \\ 
+  Sum & 1.05$^{***}$ (0.04) & 0.14 (0.11) \\ 
+  Land use &  & 0.32$^{**}$ (0.14) \\ 
+  Ecosystem type &  & $-$0.59$^{***}$ (0.10) \\ 
+  Ecosystem processes &  & $-$0.15 (0.10) \\ 
+  Provising services &  & 0.46$^{***}$ (0.16) \\ 
+  Regulating services &  & 1.02$^{***}$ (0.13) \\ 
+  Cultural services &  & $-$0.27$^{**}$ (0.10) \\ 
+  Human wellbeing &  & 0.33$^{**}$ (0.14) \\ 
+  Spatial scale &  & $-$0.19$^{**}$ (0.08) \\ 
+  Temporal scale &  & 0.16 (0.10) \\ 
+  Reversibility &  & 0.27$^{***}$ (0.09) \\ 
+  Evidence type &  & $-$0.41$^{**}$ (0.17) \\ 
+ \hline \\[-1.8ex] 
+Akaike Inf. Crit. & $-$578.37 & $-$779.70 \\ 
+Bayesian Inf. Crit. & $-$570.22 & $-$726.72 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular}
+
+\endgroup
+
+\textbf{Table SM3.} Exponential random graph models for
+\textit{domino effects} \begingroup  \small 
+
+\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-3} 
+\\[-1.8ex] & \multicolumn{2}{c}{Domino effects} \\ 
+\\[-1.8ex] & (1) & (2)\\ 
+\hline \\[-1.8ex] 
+ Non-zero & $-$1.63$^{***}$ (0.16) & 3.20$^{***}$ (0.36) \\ 
+  Sum & $-$0.05 (0.09) & $-$6.66$^{***}$ (0.44) \\ 
+  Land use &  & 0.49 (0.51) \\ 
+  Ecosystem type &  & 0.26 (0.30) \\ 
+  Ecosystem processes &  & 1.15$^{***}$ (0.35) \\ 
+  Provising services &  & 1.65$^{***}$ (0.58) \\ 
+  Regulating services &  & 2.56$^{***}$ (0.43) \\ 
+  Cultural services &  & $-$0.25 (0.26) \\ 
+  Human wellbeing &  & 1.38$^{***}$ (0.40) \\ 
+  Spatial scale &  & $-$0.04 (0.24) \\ 
+  Temporal scale &  & 0.58$^{**}$ (0.29) \\ 
+  Reversibility &  & 0.84$^{***}$ (0.28) \\ 
+  Evidence type &  & 0.78$^{*}$ (0.40) \\ 
+ \hline \\[-1.8ex] 
+Akaike Inf. Crit. & $-$556.68 & $-$1,320.93 \\ 
+Bayesian Inf. Crit. & $-$547.15 & $-$1,258.94 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular}
+
+\endgroup
+
+\textbf{Table SM4.} Exponential random graph models for
+\textit{inconvenient feedbacks} \begingroup  \small 
+
+\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-3} 
+\\[-1.8ex] & \multicolumn{2}{c}{Inconvenient feedbacks} \\ 
+\\[-1.8ex] & (1) & (2)\\ 
+\hline \\[-1.8ex] 
+ Non-zero & $-$16.56$^{***}$ (0.34) & $-$9.56$^{***}$ (0.42) \\ 
+  Sum & 2.76$^{***}$ (0.02) & 1.99$^{***}$ (0.06) \\ 
+  Land use &  & $-$0.30$^{***}$ (0.08) \\ 
+  Ecosystem type &  & 0.07 (0.07) \\ 
+  Ecosystem processes &  & $-$0.58$^{***}$ (0.07) \\ 
+  Provising services &  & 0.23$^{**}$ (0.10) \\ 
+  Regulating services &  & 0.92$^{***}$ (0.08) \\ 
+  Cultural services &  & $-$0.39$^{***}$ (0.07) \\ 
+  Human wellbeing &  & 0.04 (0.09) \\ 
+  Spatial scale &  & 0.42$^{***}$ (0.06) \\ 
+  Temporal scale &  & 0.42$^{***}$ (0.07) \\ 
+  Reversibility &  & 0.26$^{***}$ (0.06) \\ 
+  Evidence type &  & $-$0.28$^{***}$ (0.10) \\ 
+ \hline \\[-1.8ex] 
+Akaike Inf. Crit. & $-$7,922.18 & $-$8,714.67 \\ 
+Bayesian Inf. Crit. & $-$7,914.16 & $-$8,662.59 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular}
+
+\endgroup 
+
+\subsubsection{Causal loop diagram
+networks}\label{causal-loop-diagram-networks}
+
+\begin{figure}
+
+{\centering \includegraphics{170125_draft_files/figure-latex/supp1-1} 
+
+}
+
+\caption{Supplementary figure 1. Causal netoworks for all regime shifts}\label{fig:supp1}
+\end{figure}
+
+\subsubsection{A worked example of domino
+effects}\label{a-worked-example-of-domino-effects}
+
+\begin{figure}
+
+{\centering \includegraphics{170125_draft_files/figure-latex/supp2-1} 
+
+}
+
+\caption{Domino effects}\label{fig:supp2}
+\end{figure}
+
+\hypertarget{refs}{}
+\hypertarget{ref-Sole:2011us}{}
+1. Solé, R. V. \emph{Phase Transitions}. (Princeton University Press,
+2011).
+
+\hypertarget{ref-Scheffer:2009wl}{}
+2. Scheffer, M. \emph{Critical Transitions in Nature and Society}.
+(Princeton University Press, 2009).
+
+\hypertarget{ref-Biggs:2015iha}{}
+3. Biggs, R. O., Peterson, G. D. \& Rocha, J. C. The Regime Shifts
+Database: A framework for analyzing regime shifts in social-ecological
+systems. \emph{bioRxiv} (2015).
+
+\hypertarget{ref-Lewontin:1969vh}{}
+4. Lewontin, R. C. Meaning of Stability. \emph{Brookhaven Sym Biol}
+(1969).
+
+\hypertarget{ref-Carpenter2003rsi}{}
+5. Carpenter, S. R. \emph{Regime shifts in lake ecosystems : pattern and
+variation}. (2003).
+
+\hypertarget{ref-Scheffer:2012cta}{}
+6. Scheffer, M. \emph{et al.} Anticipating Critical Transitions.
+\emph{Science} (2012).
+
+\hypertarget{ref-Scheffer:2009p4449}{}
+7. Scheffer, M. \emph{et al.} Early-warning signals for critical
+transitions. \emph{Nature} (2009).
+
+\hypertarget{ref-Liu:2015go}{}
+8. Liu, J. \emph{et al.} Systems integration for global sustainability.
+\emph{Science} (2015).
+
+\hypertarget{ref-Scheffer:2003p339}{}
+9. Scheffer, M. \& Carpenter, S. Catastrophic regime shifts in
+ecosystems: linking theory to observation. \emph{Trends Ecol Evol}
+(2003).
+
+\hypertarget{ref-Scheffer:2001uu}{}
+10. Scheffer, M., Carpenter, S., Foley, J. A., Folke, C. \& Walker, B.
+Catastrophic shifts in ecosystems. \emph{Nature} (2001).
+
+\hypertarget{ref-Boettiger:2013bm}{}
+11. Boettiger, C. \& Hastings, A. Tipping points: From patterns to
+predictions. \emph{Nature} (2013).
+
+\hypertarget{ref-Hastings:2010p5336}{}
+12. Hastings, A. \& Wysham, D. B. Regime shifts in ecological systems
+can occur with no warning. \emph{Ecol Lett} (2010).
+
+\hypertarget{ref-Carpenter:2009jr}{}
+13. Carpenter, S. R. \emph{et al.} Science for managing ecosystem
+services: Beyond the Millennium Ecosystem Assessment. \emph{P Natl Acad
+Sci Usa} (2009).
+
+\hypertarget{ref-MAY:1977p3426}{}
+14. May, R. Thresholds and breakpoints in ecosystems with a multiplicity
+of stable states. \emph{Nature} (1977).
+
+\hypertarget{ref-Holling:1973p6861}{}
+15. Holling, C. S. Resilience and stability of ecological systems.
+\emph{Annual review of ecology and systematics} (1973).
+
+\hypertarget{ref-Hughes:2013cv}{}
+16. Hughes, T. P., Carpenter, S., Rockström, J., Scheffer, M. \& Walker,
+B. Multiscale regime shifts and planetary boundaries. \emph{Trends Ecol
+Evol} (2013).
+
+\hypertarget{ref-Singer:2014gj}{}
+17. Singer, M. S. \emph{et al.} Herbivore diet breadth mediates the
+cascading effects of carnivores in food webs. \emph{P Natl Acad Sci Usa}
+(2014).
+
+\hypertarget{ref-Pauly:1998iw}{}
+18. Pauly, D., Christensen, V., Dalsgaard, J., Froese, R. \& Torres, F.
+Fishing Down Marine Food Webs. \emph{Science} (1998).
+
+\hypertarget{ref-Anonymous:2007tc}{}
+19. Peters, D. P. C., Sala, O. E., Allen, C. D., Covich, A. \& Brunson,
+M. Cascading events in linked ecological and socioeconomic systems.
+\emph{FRONTIERS IN ECOLOGY} (2007).
+
+\hypertarget{ref-DebraPCPeters:2004ex}{}
+20. Peters, D. \emph{et al.} Cross-scale interactions, nonlinearities,
+and forecasting catastrophic events. \emph{P Natl Acad Sci Usa} (2004).
+
+\hypertarget{ref-Rocha:2015du}{}
+21. Rocha, J. C., Peterson, G. D. \& Biggs, R. Regime Shifts in the
+Anthropocene: Drivers, Risks, and Resilience. \emph{PLoS ONE} (2015).
+
+\hypertarget{ref-Rocha:2010vv}{}
+22. Rocha, J. C. The domino effect: a network analysis of regime shifts
+drivers and causal pathways. (Stockholm Resilience Centre, Stockholm
+University, 2010).
+
+\hypertarget{ref-Sterman:2000we}{}
+23. Sterman, J. \emph{Business Dynamics: Systems Thinking and Modeling
+for a Complex World}. (McGraw-Hill/Irwin, 2000).
+
+\hypertarget{ref-Lane:2008p6781}{}
+24. Lane, D. The emergence and use of diagramming in system dynamics: a
+critical account. \emph{Systems Research and Behavioral Science} (2008).
+
+\hypertarget{ref-Hunter:2007bq}{}
+25. Hunter, D. R. Curved exponential family models for social networks.
+\emph{Social networks} (2007).
+
+\hypertarget{ref-Krivitsky:2012uo}{}
+26. Krivitsky, P. N. Exponential-family random graph models for valued
+networks. \emph{Electronic Journal of Statistics} (2012).
+
+\hypertarget{ref-Handcock:2008p5095}{}
+27. Handcock, M., Hunter, D., Butts, C., Goodreau, S. \& Morris, M.
+statnet: Software tools for the representation, visualization, analysis
+and simulation of network data. \emph{J Stat Softw} (2008).
+
+\hypertarget{ref-Hunter:2008vh}{}
+28. Hunter, D. R., Handcock, M. S., Butts, C. T., Goodreau, S. M. \&
+Morris, M. ergm: A Package to Fit, Simulate and Diagnose
+Exponential-Family Models for Networks. \emph{J Stat Softw} (2008).
+
+\hypertarget{ref-Morris:2008ty}{}
+29. Morris, M., Handcock, M. S. \& Hunter, D. R. Specification of
+Exponential-Family Random Graph Models: Terms and Computational Aspects.
+\emph{J Stat Softw} (2008).
+
+\hypertarget{ref-RCoreTeam:2012wf}{}
+30. \emph{R: A Language and Environment for Statistical Computing}.
+
+\hypertarget{ref-Martin:2015kl}{}
+31. Martín, P. V., Bonachela, J. A., Levin, S. A. \& Muñoz, M. A.
+Eluding catastrophic shifts. \emph{P Natl Acad Sci Usa} (2015).
+
+\hypertarget{ref-Medeiros:2016vf}{}
+32. Medeiros, E. S., Caldas, I. L., Baptista, M. S. \& Feudel, U.
+Trapping Phenomenon Attenuates Tipping Points for Limit Cycles. (2016).
+
+\hypertarget{ref-Rocha:2015eea}{}
+33. Rocha, J., Yletyinen, J., Biggs, R., Blenckner, T. \& Peterson, G.
+Marine regime shifts: drivers and impacts on ecosystems services.
+\emph{Phil. Trans. R. Soc. B} (2015).
+
+\hypertarget{ref-Diaz:2008p199}{}
+34. Diaz, R. J. \& Rosenberg, R. Spreading Dead Zones and Consequences
+for Marine Ecosystems. \emph{Science} (2008).
+
+\hypertarget{ref-Altieri:2017bl}{}
+35. Altieri, A. H. \emph{et al.} Tropical dead zones and mass
+mortalities on coral reefs. \emph{P Natl Acad Sci Usa} (2017).
+
+\hypertarget{ref-Zemp:2017dr}{}
+36. Zemp, D. C. \emph{et al.} Self-amplified Amazon forest loss due to
+vegetation-atmosphere feedbacks. \emph{Nature Communications} (2017).
+
+\hypertarget{ref-Boers:2017ej}{}
+37. Boers, N., Marwan, N., Barbosa, H. M. J. \& Kurths, J. A
+deforestation-induced tipping point for the South American monsoon
+system. \emph{Sci. Rep.} (2017).
+
+\hypertarget{ref-Donges:2015fv}{}
+38. Donges, J. F. \emph{et al.} Non-linear regime shifts in Holocene
+Asian monsoon variability: potential impacts on cultural change and
+migratory patterns. \emph{Climate of the Past} (2015).
+
+\hypertarget{ref-Malik:2011bv}{}
+39. Malik, N., Bookhagen, B., Marwan, N. \& Kurths, J. Analysis of
+spatial and temporal extreme monsoonal rainfall over South Asia using
+complex networks. \emph{Clim Dynam} (2011).
+
+\hypertarget{ref-Clark:2015bj}{}
+40. Clark, D. B., Hurtado, J. \& Saatchi, S. S. Tropical Rain Forest
+Structure, Tree Growth and Dynamics along a 2700-m Elevational Transect
+in Costa Rica. \emph{PLoS ONE} (2015).
+
+\hypertarget{ref-MoruetaHolme:2015fy}{}
+41. Morueta-Holme, N. \emph{et al.} Strong upslope shifts in
+Chimborazo's vegetation over two centuries since Humboldt. \emph{P Natl
+Acad Sci Usa} (2015).
+
+\hypertarget{ref-Bakun:2010p5340}{}
+42. Bakun, A., FIELD, D. B., Redondo-Rodriguez, A. \& WEEKS, S. J.
+Greenhouse gas, upwelling-favorable winds, and the future of coastal
+ocean upwelling ecosystems. \emph{Glob Change Biol} (2010).
+
+\hypertarget{ref-Young:2016kj}{}
+43. Young, A. M., Higuera, P. E., Duffy, P. A. \& Hu, F. S. Climatic
+thresholds shape northern high-latitude fire regimes and imply
+vulnerability to future climate change. \emph{Ecography} (2016).
+
+\hypertarget{ref-Kelly:2015iq}{}
+44. Kelly, R., Genet, H., McGuire, A. D. \& Hu, F. S.
+Palaeodata-informed modelling of large carbon losses from recent burning
+of boreal forests. \emph{Nature Climate Change} (2015).
+
+\hypertarget{ref-Zona:2016hq}{}
+45. Zona, D. Biogeochemistry: Long-term effects of permafrost thaw.
+\emph{Nature} (2016).
+
+\hypertarget{ref-Alongi:2014kq}{}
+46. Alongi, D. M. Carbon Cycling and Storage in Mangrove Forests.
+\emph{Ann Rev Mar Sci} (2014).
+
+\hypertarget{ref-Gross:2009jr}{}
+47. Gross, T., Rudolf, L., Levin, S. A. \& Dieckmann, U. Generalized
+Models Reveal Stabilizing Factors in Food Webs. \emph{Science} (2009).
+
+\hypertarget{ref-Gross:2004uu}{}
+48. Gross, T. \& Feudel, U. Analytical search for bifurcation surfaces
+in parameter space. \emph{Physica D} (2004).
+
+\hypertarget{ref-Lade:2013iwa}{}
+49. Lade, S. J., Tavoni, A., Levin, S. A. \& Schlüter, M. Regime shifts
+in a social-ecological system. \emph{Theor Ecol} (2013).
+
+\hypertarget{ref-Keys:2012bo}{}
+50. Keys, P. W. \emph{et al.} Analyzing precipitationsheds to understand
+the vulnerability of rainfall dependent regions. \emph{BIOGEOSCIENCES}
+(2012).
+
+
+\end{document}

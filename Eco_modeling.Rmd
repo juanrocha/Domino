@@ -1,0 +1,375 @@
+---
+title: "Ecological modeling lab"
+output: html_notebook
+---
+
+Models reviewed in modeling ecological communities with Serguei Saavedra.
+
+### Excercise 1
+
+```{r}
+rm(list = ls())
+
+### Excercise 1 ###
+# at discret time step
+R <-  6 # rate of decrease or increase
+delta_t <- 0.2
+time_step <- seq(0,4, by= delta_t) # sequence of time_step
+N0 <- 100 # initial conditions
+
+
+N <-  rep(NA, length(time_step))
+N[1] <- N0
+
+for (i in 2:length(time_step)){
+    N[i] <-  N[i-1] + R * delta_t * N[i-1]
+}
+
+plot(time_step, N)
+```
+
+And with continuous time
+
+```{r}
+################
+# with continuous time
+
+library(deSolve)
+?ode
+
+parms <- list(r=6)
+model <- function(t, N, parms){
+    dN <-  parms$r * N 
+    list(dN)
+}
+
+delta_t <- 0.1
+time_step <- seq(0,10, by = delta_t)
+N0 <- 1
+
+sol <- ode(N0, time_step, model, parms, method = 'ode45')
+str(sol)
+head(sol)
+
+plot(sol[,1], sol[,2], type = 'l')
+
+######
+# comparison continous time vs dicret time
+
+R <- 0.2 # rate of decrease or increase
+delta_t <- 1 # time step
+time_step <- seq(0,1, by = delta_t) # sequence of time
+N0 <- 1 # initial conditions
+parms <- list(r=0.2)
+model <- function (t,N,parms){
+    dN <- parms$r * N 
+    list(dN)
+}
+
+Nd <- rep(NA, length(time_step))
+Nd[1] <- N0
+
+for (i in 2:length(time_step)){
+    Nd[i] <-  Nd[i-1] + R * delta_t * Nd[i-1]
+}
+
+sol <- ode(N0, time_step, model, parms)
+Nc <- sol[,2]
+
+plot(time_step,Nd)
+lines(time_step,Nc)
+```
+
+### Excercise 2 - Logistic growth
+
+My solution
+```{r}
+##### Excercise 2 ######
+## Logistic growth
+
+parms <- list(r=6, K = 10)
+model <- function(t, N, parms){
+    dN <-  parms$r * (1-(N/parms$K)) * N 
+    list(dN)
+}
+
+delta_t <- 0.1
+time_step <- seq(0,10, by = delta_t)
+N0 <- 1
+
+sol <- ode(N0, time_step, model, parms, method = 'ode45')
+str(sol)
+head(sol)
+
+plot(sol[,1], sol[,2], type = 'l')
+```
+
+Serguei solution
+```{r}
+### Serguei solution:
+r <- 1 # intrinsic growth rates
+alpha <-  1 # logistic breake or intra-specific competitition
+parms <- list(r=r, alpha = alpha)
+delta_t <- 0.1 #time step
+time_step <- seq(0,20, by = delta_t) # sequence of time
+N0 <- 0.2
+
+model <- function(t,N,parms){
+    dN <- parms$r * N - parms$alpha * N^2
+    list(dN)
+}
+
+sol <- ode(N0, time_step, model, parms)
+plot(sol[,1], sol[,2], type = 'l')
+```
+
+
+### Exercise 3 
+
+ 
+
+```{r}
+rm(list = ls())
+library(pracma)
+library(deSolve)
+
+# parameters
+r <- c(-1,2)
+alpha <- matrix(c(0,2,-1,0.2), nrow = 2, ncol=2)
+parms <- list(r=r, alpha = alpha)
+
+#time steps
+delta_t <- 0.1
+time_step <- seq(0,100, by = delta_t)
+
+# initial condietions
+N0 <- c(0.2, 0.4)
+
+# ode equation
+model <-  function(t, N, parms){
+    dN <- N*(parms$r - parms$alpha %*% N)
+    list(dN)
+}
+
+# numerical integration
+sol <- ode(N0, time_step, model, parms, method = 'ode45')
+
+```
+
+```{r}
+# time representation
+plot(sol[,1], sol[,2], type = 'l', ylim = c(0,5), ylab = 'Prey (black), Predator (green)', xlab = 'time')
+lines(sol[,1], sol[,3], col = 'green4')
+
+```
+
+Phase plane
+
+```{r, message=FALSE, warning=FALSE}
+# plot the state plane
+plot(sol[,2], sol[,3], type = 'l', xlim=c(0,2.5), ylim=c(0,5), col = 'blue')
+N0 <- c(0.4, 0.2)
+sol2 <- ode(N0, time_step, model, parms)
+lines(sol2[,2], sol[,3], type = 'l', col = 'red')
+
+vector <- function(N1, N2){
+    N <- rbind(N1, N2)
+    dN <- N * (parms$r - parms$alpha %*% N)
+    return(dN)
+}
+
+xx <- seq(0,4, by = 0.1)
+yy <- seq(0,5, by = 0.1)
+grid <- meshgrid(xx, yy)
+x <- as.vector(grid$X)
+y <- as.vector(grid$Y)
+dN <- vector(x,y)
+u <- dN[1,]
+v <- dN[2,]
+
+## plot vector field on the trajectory
+quiver(x,y,u,v, scale=0.05, length = 0.05, col = 'grey')
+
+# isoclines
+x1 <- seq(0,5, by = 0.1)
+y1 <- (parms$r[1] - parms$alpha[1,1]*x1 ) / parms$alpha[1,2]
+
+y2 <- seq(0,5,by = 0.1)
+x2 <- (parms$r[2] - parms$alpha[2,2]*y2) / parms$alpha[2,1]
+
+lines(x1,y1, col = 'orange4')
+lines(x2,y2, col = 'green4')
+
+```
+
+## Excercise 5
+
+
+```{r}
+rm(list = ls())
+library(pracma)
+library(deSolve)
+
+# parameters
+r <- c(1,2)
+alpha <- matrix(c(1,0.2,0.2,1), nrow = 2, ncol = 2)
+parms <- list(r = r, alpha = alpha)
+
+# time steps
+delta_t <- 0.1
+time_step <- seq(0,200,by=delta_t)
+
+# initial condition
+N0 <- c(0.2,0.6)
+
+# ode equation
+model <- function(t,N,parms){
+    dN <- N*(parms$r - parms$alpha %*% N)
+    list(dN)
+}
+
+
+# numerical integration
+sol <- ode(N0, time_step, model, parms)
+
+# plot vs time
+plot(sol[,1], sol[,2], type = 'l', ylim =c(0,4))
+lines(sol[,1], sol[,3], type = 'l', col = 'red')
+
+# plot the phase plane
+plot(sol[,2], sol[,3], type = 'l', col = 'blue')
+
+```
+
+## Mutualistic case for homework
+
+### Weak vs Strong mutualism: playing with the alpha matrix. 
+Facultative occurs when the species can survive without the other
+
+```{r}
+rm(list = ls())
+library(pracma)
+library(deSolve)
+
+# parameters
+r <- c(1,1)
+alpha <- matrix(c(1,-0.1,-0.5,1), nrow = 2, ncol = 2)
+parms <- list(r = r, alpha = alpha)
+
+# time steps
+delta_t <- 0.1
+time_step <- seq(0,200,by=delta_t)
+
+# initial condition
+N0 <- c(0.2,0.6)
+
+# ode equation
+model <- function(t,N,parms){
+    dN <- N*(parms$r - parms$alpha %*% N)
+    list(dN)
+}
+
+sol <- ode(N0, time_step, model, parms)
+
+alpha
+```
+
+
+```{r}
+# time representation
+plot(sol[,1], sol[,2], type = 'l', ylim= c(0,4), ylab = 'Prey (black), Predator (green)', xlab = 'time')
+lines(sol[,1], sol[,3], col = 'green4')
+
+```
+
+Phase plane
+
+```{r, message=FALSE, warning=FALSE}
+# plot the state plane
+plot(sol[,2], sol[,3], type = 'l', xlim=c(0,2.5), ylim=c(0,5), col = 'blue')
+N0 <- c(0.4, 0.2)
+sol2 <- ode(N0, time_step, model, parms)
+lines(sol2[,2], sol[,3], type = 'l', col = 'red')
+
+vector <- function(N1, N2){
+    N <- rbind(N1, N2)
+    dN <- N * (parms$r - parms$alpha %*% N)
+    return(dN)
+}
+
+xx <- seq(0,4, by = 0.1)
+yy <- seq(0,5, by = 0.1)
+grid <- meshgrid(xx, yy)
+x <- as.vector(grid$X)
+y <- as.vector(grid$Y)
+dN <- vector(x,y)
+u <- dN[1,]
+v <- dN[2,]
+
+## plot vector field on the trajectory
+quiver(x,y,u,v, scale=0.05, length = 0.05, col = 'grey')
+
+# isoclines
+x1 <- seq(0,5, by = 0.1)
+y1 <- (parms$r[1] - parms$alpha[1,1]*x1 ) / parms$alpha[1,2]
+
+y2 <- seq(0,5,by = 0.1)
+x2 <- (parms$r[2] - parms$alpha[2,2]*y2) / parms$alpha[2,1]
+
+lines(x1,y1, col = 'orange4')
+lines(x2,y2, col = 'green4')
+
+```
+
+For high values of alpha_12 and alpha_21 the model goes to infinity. 
+
+
+### Obligative: when they need eachother. 
+One needs to modify the model to include such features
+
+```{r}
+rm(list = ls())
+library(pracma)
+library(deSolve)
+
+# parameters
+r <- c(1,2)
+alpha <- matrix(c(1.2,-0.4,-0.5,1.2), nrow = 2, ncol = 2)
+parms <- list(r = r, alpha = alpha)
+
+# time steps
+delta_t <- 0.1
+time_step <- seq(0,200,by=delta_t)
+
+# initial condition
+N0 <- c(0.2,0.6)
+
+# ode equation
+model <- function(t,N,parms){
+    dN <- N*(parms$r - parms$alpha %*% N)
+    list(dN)
+}
+
+sol <- ode(N0, time_step, model, parms)
+
+alpha
+```
+
+
+```{r}
+# time representation
+plot(sol[,1], sol[,2], type = 'l',ylim= c(0,4),  ylab = 'Prey (black), Predator (green)', xlab = 'time') #ylim= c(0,4),
+lines(sol[,1], sol[,3], col = 'green4')
+
+```
+
+Explore the type II functional response to avoid the model to blow off (go to infinity)
+
+Threshold case: when one needs a critical population size for the mutualism to appear.
+
+
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).

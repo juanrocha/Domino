@@ -1,0 +1,152 @@
+---
+title: "RSDB"
+author: "Juan Rocha"
+date: "1/20/2017"
+output: 
+  html_document:
+    self_contained: true
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    dev: png
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+rm(list = ls())
+set.seed(12345)
+library (dplyr)
+library (tidyr)
+library (network)
+library (sna) # load the package
+library(RColorBrewer)
+library(ggplot2)
+library(GGally)
+
+library(ggmap)
+library(maptools)
+library(maps)
+library(mapproj)
+library(leaflet)
+```
+## The Regime Shifts Database
+
+A project I started as master student and later developed into my PhD, co-lead by Oonsie Biggs and Garry Peterson and hosted by the Stockholm Resilience Centre. It synthesizes over 1000 papers on regime shifts across the planet, summarizes 31 different types of regime shifts in social-ecological systems and over 300 case studies. Despite years of work (7 to be precise), the first sharable version of the paper paper dates from 2013, the current version is resting on a pre-print repository since 2015, and to my knowledge it has not been even submitted. Discuraging to continue working on it, and even harder to start collaborations on data that has not even been peer-reviewed, such as my current work at Princeton.
+
+Anyways, the database has produced
+
+
+```{r map, fig.height=5, fig.width=6}
+
+rsdb <- read.csv(file = "~/Documents/Projects/Cascading Effects/161025_RegimeShiftsDatabase.CSV",
+                  header = TRUE, sep = ",")
+
+cases <- read.csv(file = '~/Downloads/Regime Shifts Database Case Studies_170120.CSV',
+                  header = T, sep = ',', stringsAsFactors = F )
+
+rsdb <- rsdb [-2,] # delete for know Invasive floating plants... seems to be duplicated.
+rs <- as.character(rsdb[,3])
+
+# coords <- geocode(cases$Case.study.name)
+
+# Missing coordinates were completed manually using Diaz supp material and GoogleEarth.
+# cases$Case.study.name[which(is.na(coords$lon))]
+
+# coords$place <- cases$Case.study.name
+# str(coords)
+# write.csv(coords, file = 'case_coords.csv' )
+coords <- read.csv2("~/Documents/Projects/Cascading Effects/Domino/case_coords.csv", dec = '.')
+place <- c("Pleistocene Park, Sakha Republic, Russia",
+              "Arctic ocean",
+              "Svalbard",
+              "Russkoye Ustye, Russia",
+              "Alaska",
+              "Benguela, Namibia",
+              "Southern Ocean",
+              "Everglades National Park",
+              "Atlantic Ocean",
+              "Baltic Sea",
+              "West Antartica",
+              "Turks and Caicos Islands",
+              "Finland",
+              "Los Angeles",
+              "Lena river",
+              "Elizabeth River, Portsmouth, VA",
+              "Wolderwijd",
+              "Yukon",
+              "Amazon",
+              "Farallon Islands",
+              "Chesapeake bay",
+              "Serengeti National Park",
+              "Gulf of Mexico",
+              "North Atlantic Ocean",
+              "Greenland",
+              "Arctic",
+              "Australia",
+              "Great Barrier Reef",
+              "India",
+              "laguna de Fuquene"
+              )
+
+rs <- data.frame(rs, place, stringsAsFactors = F)
+
+# coord_rs <- geocode(rs$place)
+# write.csv(coord_rs, file = 'rs_coords.csv' )
+
+coord_rs <- read.csv(file = '~/Documents/Projects/Cascading Effects/Domino/rs_coords.csv', dec = '.')
+
+
+cases <- cbind(cases, coords)
+rs <- cbind(rs, coord_rs)
+rs$rs <- as.factor(rs$rs)
+cases$Type.of.regime.shift <- as.factor(cases$Type.of.regime.shift)
+names(cases)[7] <- 'rs'
+
+# correction on RS names for plotting
+levels(rs$rs) [17] <- "Marine food webs"
+levels(rs$rs) [28] <- "Thermokarst lakes"
+levels(cases$rs)[17] <- "Fisheries collapse"
+levels(cases$rs)[c(5,22)] <- "Marine food webs"
+levels(cases$rs)[c(2,9,12,17,20)] <- "Other"
+
+# names(cases)[7] <- 'Regime Shifts'
+# names(rs)[1] <- 'Regime Shifts'
+
+
+world <- map_data('world')
+# class(world)
+world <- fortify(world)
+# m1 <- get_map( c(-57.3, -73.4, 231.0, 85.0), source = "google") # world not supported
+# ggmap(m1)
+
+
+m <- ggplot(world, aes(long, lat)) +
+    geom_polygon(fill="grey90", aes(group = group)) +
+    geom_path(color="white",aes(group=group), size = 0.2) +
+    coord_equal() + theme_void(base_size = 7, base_family = "Helvetica")
+
+m + geom_point(data = cases, aes(lon, lat, color = rs), size = 0.2, show.legend = F) +
+    geom_point(data = rs, aes(lon,lat, color = rs), size = 2, show.legend = T ) +
+    theme(legend.position = "bottom", legend.text = element_text(size = 4)) +
+    scale_color_discrete(guide = guide_legend(title = "Regime shifts documented on the regime shifts database \n Source: www.regimeshifts.org", title.position = 'top', title.hjust = 0.5) )
+
+# setwd("~/Documents/Projects/Cascading Effects/")
+# quartz.save(file = 'rsdb_map.png', type = 'png', dpi = 500, width = 6, height = 6, bg = 'white', pointsize = 5)
+
+# format(object.size(m), units = "Mb" )
+
+```
+
+Now an experimental interactive version:
+
+```{r interactive}
+world <- map('world', fill = T, plot = F)
+leaflet(data = world) %>%
+    addProviderTiles("Stamen.Toner") %>% addPolygons(fillColor = "grey90", stroke = F) %>%
+    addCircles(data = cases, lat = ~lat, lng = ~lon, radius = 1, color = "white")
+
+```
+
