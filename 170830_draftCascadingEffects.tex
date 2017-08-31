@@ -86,7 +86,7 @@
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{August 30, 2017}
+  \date{August 31, 2017}
 
 \usepackage{dcolumn}
 \usepackage{lineno}
@@ -235,7 +235,7 @@ based on literature review of \(> 1000\) scientific
 papers\textsuperscript{3}. The database decomposes regime shifts in
 terms of describing their regimes, drivers, feedback mechanisms, impacts
 on ecosystem services, and management options. It provides a set of
-\(92\) categorical variables about impacts, scales, evidence
+\(92\) categorical variables about impacts, scales, and evidence
 type\textsuperscript{3}. When possible, entries to the regime shifts
 database have been peer reviewed by an expert on the topic to ensure
 quality and accuracy of its contents\textsuperscript{3}. The regime
@@ -261,16 +261,16 @@ likelihood of a link between regime shifts in this network, and what
 features change this likelihood. The explanatory variables (such as
 scale) are modeled as edge covariates derived from the regime shifts
 categorical variables (\(N=92\), See SM). We focused on how similar two
-regime shifts are regarding the categorical variables they share and how
-that similarity increases or not the likelihood of having a link, this
-is, the likelihood of presenting any of the cascading effects types. All
-these networks contain all valued links of count data, therefore the
-specification for the exponential random graph models follows
-Krivitsky\textsuperscript{34} and a Poisson reference distribution. We
-also fitted ordinary least squares OLS approximation that only takes
-similarity, not network structure, into account. All software used is
-under open access license\textsuperscript{35} and run under the R
-statistical language\textsuperscript{39}.
+regime shifts are -regarding the categorical variables they share- and
+how that similarity increases or not the likelihood of having a link,
+this is, the likelihood of presenting any of the cascading effects
+types. All these networks contain all valued links of count data,
+therefore the specification for the exponential random graph models
+follows Krivitsky\textsuperscript{34} and a Poisson reference
+distribution. We also fitted ordinary least squares OLS approximation
+that only takes similarity, not network structure, into account. All
+software used is under open access license\textsuperscript{35--38} and
+run under the R statistical language\textsuperscript{39}.
 
 \begin{figure}
 
@@ -289,11 +289,6 @@ statistical language\textsuperscript{39}.
 
 \caption{Minimal examples of the cascading effects framework. a) Sharing drivers: Causal loop diagram examples for the regime shift on the thermohaline circulation and tundra to forest. Positive links are depicted as blue arrows, negative links as orange arrows, drivers are variables outside feedback loops (in red), while variables inside feedbacks are grey. While thermohaline circulation has one driver, tundra to forest has three. The bipartite network (right) depicts drivers (red nodes) shared by these two regime shifts (blue nodes), the only driver shared by both is green house gas emissions. b) Domino effects: Four variables are part of feedback processes in the causal loop diagram of thermohaline circulation that are in turn drivers of kelps transitions. Domino effects create directional dependencies between regime shifts. c) Hidden feedbacks: Both causal loop diagrams in b) are merged into a network where both links and node sizes are scaled according to the number of feedback loops where they are involved. The histogram on the right shows the number of feedbacks per feedback length. Hidden feedbacks are feedbacks that emerge when joining the networks that did not exist on the individual regime shift networks, in this example two hidden feedbacks exist of length 5.}\label{fig:Fig2}
 \end{figure}
-
-\begin{verbatim}
-## pdf 
-##   2
-\end{verbatim}
 
 \subsection{Results}\label{results}
 
@@ -468,10 +463,7 @@ effects. Of particular importance, the weakening of the Indian Monsoon,
 primary production in the Arctic ocean, seagrass transitions, soil
 salinization, bivalves collapse and the weakening of the thermohaline
 circulation are regime shifts that are expected to be involved in many
-of these couplings, at least at the structural level. This is, without
-knowledge of how strong these couplings could be or whether feedbacks
-are strong enough to produce signals that will impact the coupled
-system.
+of these couplings, at least at the structural level.
 
 Intuitively, the sharing of drivers is proposed as a potential
 mechanisms that can correlate regime shifts in space and time, but not
@@ -502,11 +494,11 @@ likages between euthrophication and hypoxia\textsuperscript{17}, hypoxia
 and coral transitions\textsuperscript{18}, or shifts in coral reefs and
 mangroves transitions\textsuperscript{30}. Other examples in the
 terrestrial rehalm report potential increase in Arctic warming from
-higher fire frequency in boreal forest 27; 28{]} or permafrost
-thawing\textsuperscript{29}, potentially impacting any regime shift in
-the Arctic driven by temperature\textsuperscript{43}. Shifts in forest
-that can reduce moisture recycling has also been reported to potentially
-impact mountain forest\textsuperscript{23,24},
+higher fire frequency in boreal forest\textsuperscript{27,28} or
+permafrost thawing\textsuperscript{29}, potentially impacting any regime
+shift in the Arctic driven by temperature\textsuperscript{43}. Shifts in
+forest that can reduce moisture recycling has also been reported to
+potentially impact mountain forest\textsuperscript{23,24},
 drylands\textsuperscript{26}, and regime shifts in the ocean affected by
 nutrients cycling\textsuperscript{25}. While this handful of examples
 represent an emergent literature on regime shifts interactions, the
