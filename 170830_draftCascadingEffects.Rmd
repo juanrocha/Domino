@@ -16,7 +16,7 @@ corresponding_author:
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 
 abstract: |
-  Regime shifts in nature and society are likely to occur more often and severe as humans increase they pressure on the world ecosystems. Yet it is largely unknown how these transitions will interact, whether the occurrence of one will increase the likelihood of another, or whether they might simply correlate on distant places. Here we present a framework for exploring three types of potential cascading effects of critical transitions$:$ drivers sharing, domino effects and hidden feedbacks. Drivers and feedback mechanisms are reduced to a directed signed graph that allow us to explore drivers co-occurrence. Sharing drivers is likely to increase correlation in time or space among critical transitions but not necessarily interdependence. Domino effects occur when the feedback processes of one regime shifts affect the drivers of another, creating a one way dependency. Hidden feedbacks were identified by mapping circular pathways on coupled networks that have not been previously reported, helping us detect potential two way dependencies. The method serves as a platform for hypothesis exploration of plausible new feedbacks between critical transitions in social-ecological systems; it helps to scope structural interdependence and hence an avenue for future modelling and empirical testing of regime shifts coupling.
+  Regime shifts in nature and society are likely to occur more often and severe as humans increase they pressure on the world ecosystems. Yet it is largely unknown how these transitions will interact, whether the occurrence of one will increase the likelihood of another, or whether they might simply correlate on distant places. Here we explore three types of potential cascading effects of critical transitions$:$ drivers sharing, domino effects and hidden feedbacks. Regime shifts are reduced to a network drivers and feedback processes underlying their dynamics. This directed signed graphs that allow us to explore drivers co-occurrence. Sharing drivers is likely to increase correlation in time or space among critical transitions but not necessarily interdependence. Domino effects occur when the feedback processes of one regime shifts affect the drivers of another, creating a one way dependency. Hidden feedbacks were identified by mapping circular pathways on coupled networks that have not been previously reported, helping us detect potential two way dependencies. Our results explore plausible interconnections and new feedbacks between regime shifts in social-ecological systems; it helps to scope structural interdependence and hence an avenue for future modelling and empirical testing of regime shifts coupling.
 
 keywords: "regime shifts, cascading effects, tele-connections, networks"
 
@@ -176,13 +176,26 @@ rs.net <- function (dat, i){
 
 
 ## Introduction
-Critical transitions or regime shifts has been documented on a wide variety of systems from climate, finance, language, neurological diseases, ecosystems and ancient societies [@Sole:2011us; @Scheffer:2009wl]. A large set of regime shifts in social-ecological systems has been identified [@Biggs:2015iha]; and as human pressures increase on the planet, these transitions might become more acute and frequent than previously thought[@Lewontin:1969vh]. Research on regime shifts is often confined to well defined domains of expertise (e.g. limnology, urbanism, climate science), adopting either an empirical, modelling [@Carpenter2003rsi] or early warnings indicator approach [@Scheffer:2012cta; @Scheffer:2009p4449]. These approaches require a deep knowledge of the causal structure of the system or a high quality spatio-temporal data respectively. These requirements have confined the body of research to the analysis of individual types of regime shifts rather than the potential interactions across systems. Yet, one of the key challenges of sustainability science is analyzing the diverse set of interactions across human-environmental systems [@Liu:2015go].
+Regime shifts or critical transitions have been documented on a wide variety of systems from climate, finance, language, neurological diseases, ecosystems and ancient societies [@Sole:2011us; @Scheffer:2009wl]. Over 30 regime shifts in social-ecological systems has been identified [@Biggs:2015iha]; and as human pressures increase on the planet, these transitions might become more acute and frequent than previously thought[@Lewontin:1969vh]. Research on regime shifts is often confined to well defined domains of expertise (e.g. limnology, urbanism, climate science), adopting either an empirical, modelling [@Carpenter2003rsi] or early warnings indicator approach [@Scheffer:2012cta; @Scheffer:2009p4449]. These approaches require a deep knowledge of the structure of the causal network of system or a high quality of spatio-temporal data respectively. These requirements have confined the body of research to the analysis of individual types of regime shifts rather than the potential interactions across systems. Yet, one of the key challenges of sustainability science is analyzing the diverse set of interactions across human-environmental systems [@Liu:2015go]; in other words, how social-ecological regime shifts could interact?.
 
-Regime shifts are large, abrupt and persistent changes in the function and structure of systems [@Scheffer:2003p339; @Scheffer:2001uu]. They present a challenge for ecological management and governance because they are very difficult to predict [@Boettiger:2013bm; @Hastings:2010p5336] and reverse [@Scheffer:2003p339], while having substantial impacts on the availability or ecosystem services that societies rely upon [@Carpenter:2009jr]. A regime is the region of the parameter space where state variables (e.g. vegetation density, coral cover) fluctuate, they are also called equilibrium, alternative stable states, basins or domains of attraction. Systems prone to regime shifts have more than one alternative stable states; under similar parameter values they can suddenly shift from one domain to another when critical thresholds are crossed [@MAY:1977p3426; @Holling:1973p6861]. Change in slow variables (e.g. temperature in coral reefs) often shrinks the basin of attraction, making the system more susceptible to shifting when exposed to shock events (e.g. hurricanes) or the action of external drivers [@Scheffer:2012cta].
+Regime shifts are large, abrupt and persistent changes in the function and structure of systems [@Scheffer:2003p339; @Scheffer:2001uu]. They present a challenge for ecological management and governance because they are very difficult to predict [@Boettiger:2013bm; @Hastings:2010p5336] and reverse [@Scheffer:2003p339], while having substantial impacts on the availability or ecosystem services that societies rely upon [@Carpenter:2009jr]. A regime is the region of the parameter space where fast state variables (e.g. vegetation density, coral cover) fluctuate, they are also called equilibrium, alternative stable states, basins or domains of attraction. Systems prone to regime shifts have more than one alternative stable states; under similar parameter values they can suddenly shift from one domain to another when critical thresholds are crossed [@MAY:1977p3426; @Holling:1973p6861]. Change in slow variables (e.g. temperature in coral reefs) often shrinks the basin of attraction, making the system more susceptible to shifting when exposed to shock events (e.g. hurricanes) or the action of external drivers [@Scheffer:2012cta].
 
-How different regime shifts might be interconnected is largely unknown and a key frontier of research [@Liu:2015go; @Hughes:2013cv]. Some examples of cascading effects between regime shifts have been reported in the literature but a systematic review is lacking. For example, eutrophication is often reported as a preceding ecosystem state to hypoxia or dead zones in coastal areas [@Diaz:2008p199]. Similarly, hypoxic events have been reported to affect the resilience of coral reefs to warming and other stressors in the tropics [@Altieri:2017bl]. Moisture recycling feedback is a key underlying process on the shift from forest to savanna [@Zemp:2017dr; @Boers:2017ej] or the Indian monsoon [@Donges:2015fv, @Malik:2011bv]; but also has the potential to couple ecosystems beyond the forest that depend on moisture recycling as an important water source. Changes in moisture recycling can affect mountain forest in the Andes [@Clark:2015bj; @MoruetaHolme:2015fy], nutrient cycling in the ocean by affecting sea surface temperature and therefore regime shifts in marine food webs [@Bakun:2010p5340], or exacerbation of dry land related regime shifts [@DebraPCPeters:2004ex]. More recently it has been reported that increasing frequency of boreal forest fire could be actually strong enough to increase warming in the Arctic [@Young:2016kj; @Kelly:2015iq]. Permafrost thawing across the Arctic peatlands can be a dangerous amplifier of global warming too by releasing methane [@Zona:2016hq]. Mangrove forest are expected to store less carbon as their areas shrink and their ability to build peat soils is overwhelmed by sea level rise; however it is unclear whether the effect will be comparable as to impact global carbon budgets and further warming [@Alongi:2014kq]. While this growing body of literature already presents some potential cascading effects, a rigorous method for systematically assessing what regime shifts could be interconnected and how is needed.
+How different regime shifts might be interconnected is largely unknown and a key frontier of research [@Liu:2015go; @Hughes:2013cv]. Some examples of cascading effects between regime shifts have been reported in the literature but a systematic review is lacking (See summary Table 1). For example, eutrophication is often reported as a preceding ecosystem state to hypoxia or dead zones in coastal areas [@Diaz:2008p199]. Similarly, hypoxic events have been reported to affect the resilience of coral reefs to warming and other stressors in the tropics [@Altieri:2017bl]. Moisture recycling is a key underlying feedback on the shift from forest to savanna [@Zemp:2017dr; @Boers:2017ej; @Khanna:2017br] or the Indian monsoon [@Donges:2015fv, @Malik:2011bv]; but also has the potential to couple ecosystems beyond the forest that depend on moisture recycling as an important water source. Changes in moisture recycling can affect mountain forest in the Andes [@Clark:2015bj; @MoruetaHolme:2015fy], nutrient cycling in the ocean by affecting sea surface temperature and therefore regime shifts in marine food webs [@Bakun:2010p5340], or exacerbation of dry land related regime shifts [@DebraPCPeters:2004ex]. The increasing frequency of boreal forest fire could be actually strong enough to increase warming in the Arctic [@Young:2016kj; @Kelly:2015iq] potentially exacerbating Arctic sea ice loss. By the same token, Arctic sea ice loss can have important impacts on the weakening of the thermohaline circulation and in the long term further exacerbating warming [@Sevellec:2017fk]. Permafrost thawing across the Arctic peatlands can be a dangerous amplifier of global warming too by releasing methane [@Zona:2016hq]. Mangrove forest are expected to store less carbon as their areas shrink and their ability to build peat soils is overwhelmed by sea level rise; however it is unclear whether the effect will be comparable as to impact global carbon budgets and further warming [@Alongi:2014kq]. While this growing body of literature already presents some potential cascading effects, a rigorous method for systematically assessing what regime shifts could be interconnected and how is needed.
 
-The aim of this paper is developing a framework for exploring potential interactions amongst regime shifts in social-ecological systems. We propose three types of interconnections: *i)* two regime shifts can sync if they are affected by the same driving forces [@Rocha:2015du]; *ii)* a domino effect is triggered when the occurrence of one regime shift affects the drivers of other regime shift [@Rocha:2010vv; @Hughes:2013cv; @Scheffer:2012cta]; or *iii)* when two regime shifts dynamics generate new (not previously identified) feedback dynamics [@Liu:2015go] by reinforcing or damping each other drivers [@Rocha:2010vv]. Here we present a graphical framework based on networks to explore such hypothetical interconnections.
+:Table 1. Summary of proposed cascading effects between regime shifts.
+
+| Regime shift 1 | Regime Shift 2 | Type | Reference |
+|:--------------:|:--------------:|:--------------:|:--------------:|
+| Marine eutrophication | Hypoxia | Sharing drivers, domino effect | [@Diaz:2008p199] |
+| Hypoxia | Coral transitions | Domino effect | [@Altieri:2017bl] |
+| Forest to savanna | Mountain forest transitions | Domino effect | [@Clark:2015bj; @MoruetaHolme:2015fy] |
+| Forest to savanna | Marine food webs | Domino effect | [@Bakun:2010p5340] |
+| Forest to savanna | Dryland degradation | Domino effect | [@DebraPCPeters:2004ex] |
+| Coniferous to deciduous boreal forest | Arctic sea ice loss | Hidden feedback | [@Young:2016kj; @Kelly:2015iq] |
+| Peatland transitions | Arctic sea ice loss | Hidden feedback | [@Zona:2016hq] |
+| Arctic sea ice loss | Thermohaline circulation weakening | Hidden feedback | [@Sevellec:2017fk] |
+
+The aim of this paper is exploring potential interactions amongst regime shifts in social-ecological systems. We propose three types of interconnections: *i)* two regime shifts can sync if they are affected by the same driving forces [@Rocha:2015du]; *ii)* a domino effect is triggered when the occurrence of one regime shift affects the drivers of other regime shift [@Rocha:2010vv; @Hughes:2013cv; @Scheffer:2012cta]; or *iii)* when two regime shifts dynamics generate new (not previously identified) feedback dynamics [@Liu:2015go] by reinforcing or damping each other drivers [@Rocha:2010vv].
 
 ## Method summary
 
@@ -192,7 +205,17 @@ What the examples from the literature mentioned above have in common is that a l
 
 To test these hypotheses we used the [regime shifts database](www.regimeshifts.org), to our knowledge the largest online repository of regime shifts in social-ecological systems (Fig. 1). It offers syntheses of over $30$ generic types of regime shifts, $> 300$ case studies based on literature review of $> 1000$ scientific papers [@Biggs:2015iha]. The database decomposes regime shifts in terms of describing their regimes, drivers, feedback mechanisms, impacts on ecosystem services, and management options. It provides a set of $92$ categorical variables about impacts, scales, and evidence type [@Biggs:2015iha]. When possible, entries to the regime shifts database have been peer reviewed by an expert on the topic to ensure quality and accuracy of its contents [@Biggs:2015iha]. The regime shifts database also offers causal loop diagrams as a summary of the driving processes and underlying feedbacks of regime shifts. Each causal loop diagram was turned into a network by creating the adjacency matrix $A$, where $A_{i,j}$ is $1$ if there is a connection or zero otherwise. Link sign $w_{i,j}$ represent link polarity taking $-1$ if the relationship is expected to be inverse proportional, or $1$ when proportional (See SM). Based on the signed graphs we created three response variables corresponding to each of the cascading effects.
 
-Our hypotheses were tested using as response variable for _drivers sharing_ the number of drivers shared, for _domino effects_ the number of directed pathways that connect two regime shifts, and for _hidden feedbacks_ it is the number of k-cycles that emerge on the joined network that do not exist on the separate causal networks (See SM). Note that all three response variables are matrixes that can be represented as weighted networks in our statistical framework where nodes are regime shifts and the link depends on the cascading effect described. Our research question can be translated then to what is the likelihood of a link between regime shifts in this network, and what features change this likelihood. The explanatory variables (such as scale) are modeled as edge covariates derived from the regime shifts categorical variables ($N=92$, See SM). We focused on how similar two regime shifts are -regarding the categorical variables they share- and how that similarity increases or not the likelihood of having a link, this is, the likelihood of presenting any of the cascading effects types. All these networks contain all valued links of count data, therefore the specification for the exponential random graph models follows Krivitsky [-@Krivitsky:2012uo] and a Poisson reference distribution. We also fitted ordinary least squares OLS approximation that only takes similarity, not network structure, into account. All software used is under open access license [@Handcock:2008p5095; @Hunter:2008vh; @Morris:2008ty; @Hunter:2007bq] and run under the R statistical language [@RCoreTeam:2012wf].
+Our hypotheses were tested using as response variable for _drivers sharing_ the number of drivers shared, for _domino effects_ the number of directed pathways that connect two regime shifts, and for _hidden feedbacks_ it is the number of k-cycles that emerge on the joined network that do not exist on the separate causal networks (See SM). Note that all three response variables are matrixes that can be represented as weighted networks in our statistical framework where nodes are regime shifts and the link depends on the cascading effect described. Our research question can be translated then to what is the likelihood of a link between regime shifts in this network, and what features change this likelihood. The explanatory variables (such as scale) are modeled as edge covariates derived from the regime shifts categorical variables ($N=92$, See SM). We focused on how similar two regime shifts are -regarding the categorical variables they share- and how the similarity increases or not the likelihood of having a link, this is, the likelihood of presenting any of the cascading effects types. All these networks contain weighted links of count data, therefore the specification for the exponential random graph models follows Krivitsky [-@Krivitsky:2012uo] and a Poisson reference distribution. All models were fit in the R statistical language [@RCoreTeam:2012wf] using packages for modeling networks with exponential random graph models [@Handcock:2008p5095; @Hunter:2008vh; @Morris:2008ty; @Hunter:2007bq].
+
+
+:Table 2. Summary of hypothesis tested: What does increase the likelihood of a cascading effect?.
+
+| Cascading effect | Hypothesis | Response variable |
+|:--------------:|:--------------:|:--------------:|
+| Sharing drivers | Regime shifts are more likely to share drivers if they are subject to similar land uses and occur on similar ecosystem type | Number of drivers shared between regime shifts | 
+| Domino effects | Domino effects are more likely to occur between regime shifts with large spatial scale and slow temporal dynamics towards regime shifts in smaller scales and faster in time | Number of pathways from feedback loop in regime shift 1 to driver in regime shift 2 | 
+| Hidden feedbacks | Hidden feedbacks are more likely to occur between regime shifts that share scales and ecosystem types | Number of non-previously identified feedbacks (circular pathways) in the joint network of regime shift 1 and regime shift 2 |
+
 
 ```{r Fig1, cache = TRUE, echo = FALSE, error=FALSE, warning=FALSE, message=FALSE, fig.height = 4, fig.width = 6, fig.align = 'center', fig.cap = "Regime shifts around the world. Large points show generic types of regime shifts (n = 35) while small points are case studies (n=324).", dev.args = list(pointsize = 5)}
 
@@ -241,109 +264,187 @@ m + geom_point(data = cases, aes(lon, lat, color = rs), size = 0.2, show.legend 
 # library(jpeg)
 # bifurcation <- readJPEG("~/Documents/JUAN/PhD-SRC/Draft papers/Thesis/bifurcation.jpg" )
 
+# load mini data
+mini_dat <- read_csv2("~/Documents/Projects/Cascading Effects/minimal_example_cld_cascading_effects.csv")
+
+# mini_dat %>% filter (Regime.Shift == 'rs1') %>%
+#     select(tail, head, color) %>%
+#     # network(directed = T, ignore.eval=FALSE, matrix.type = 'edgelist') %>%
+#     # ggnet2(edge.color = "color", arrow.size = 1) # no curved edges, I need them
+#     igraph::graph_from_data_frame(directed = TRUE) %>%
+#     igraph::plot.igraph(edge.curved = c(0,0,0.5,0.5), 
+#         vertex.color = alpha(c(rep("red", 2), rep("purple",2)), 0.7 ),
+#         vertex.frame.color = NA, vertex.label.color = "grey84", 
+#         layout = matrix(c(rep(0,4), 4,1,3,2), ncol = 2, nrow = 4),
+#         main = "regime shift 1")
+
+
 # quartz(width = 6, height = 4, pointsize = 7)
-par(mfrow = c(3,3), mar = c(1,1,1,1)) # layout(matrix(1:12,4,3, byrow=T))
+par(mfrow = c(3,4), mar = c(1,1,1,1)) # layout(matrix(1:12,4,3, byrow=T))
 plot.new()
 # grid.newpage() # I need this line to plot on quartz, but not on markdown pdf.
-pushViewport(viewport(layout = grid.layout(3,3)))
-
-
-# layout(matrix(c(1:7,7,8),3,3, byrow = T))
-# par(mar = c(0,1,1,0))
-# Insert png for the framework
-# plot(c(0,452), c(0,868), asp = 1, type = 'n', xlab = "", ylab= "", xpd = T, axes = FALSE) # numbers come from pixels
-# rasterImage(logo, 0, 0, 452, 868 , interpolate = T)
+pushViewport(viewport(layout = grid.layout(3,4)))
 
 ## first row 2 clds
 pushViewport(viewport(layout.pos.row=1, layout.pos.col=1))
 par(fig = gridFIG(), new = TRUE)
-plotnet(rs.net(dat, 27))
+mini_dat %>% filter (Regime.Shift == 'rs1') %>%
+    select(tail, head, color) %>%
+    # network(directed = T, ignore.eval=FALSE, matrix.type = 'edgelist') %>%
+    # ggnet2(edge.color = "color", arrow.size = 1) # no curved edges, I need them
+    igraph::graph_from_data_frame(directed = TRUE) %>%
+    igraph::plot.igraph(edge.curved = c(0,0,0.5,0.5), 
+        vertex.color = alpha(c(rep("red", 2), rep("purple",2)), 0.7 ),
+        vertex.frame.color = NA, vertex.label.color = "grey84", 
+        layout = matrix(c(rep(1,4), 4,1,3,2), ncol = 2, nrow = 4),
+        main = "regime shift 1")
 title('a)', adj = 0, cex=5)
 popViewport()
 
 pushViewport(viewport(layout.pos.row=1, layout.pos.col=2))
 par(fig = gridFIG(), new = TRUE)
-plotnet(rs.net(dat, 29))
+mini_dat %>% filter (Regime.Shift == 'rs2') %>%
+    select(tail, head, color) %>%
+    igraph::graph_from_data_frame(directed = TRUE) %>%
+    igraph::plot.igraph(edge.curved = c(0,0.5,0.5), 
+        vertex.color = alpha(c(rep("red", 1), rep("purple",2)), 0.7 ),
+        vertex.frame.color = NA, vertex.label.color = "grey84", 
+        layout = matrix(c(rep(1,3), 3,2,1), ncol = 2, nrow = 3),
+        main = "regime shift 2")
 popViewport()
-## plot a bipartite network:
-# manually adjust coordinates
-network.layout.bip <- function (d, layout.par){
-	y <- c(3,2,1,3,2)
-	x <- c(1,1,1,2,2)
-	cbind(x,y)
-}
-
-ex1 <- network(
-    matrix(c(1,1,
-             1,0,
-             1,0), nrow = 3, ncol =2),
-        bipartite = TRUE)
-
-ex1 %v% "col" <- c(rep("#E41A1C",3),rep("blue",2))
 
 
 pushViewport(viewport(layout.pos.row=1, layout.pos.col=3))
 par(fig = gridFIG(), new = TRUE)
-plot.network(ex1,
-    vertex.col = ex1 %v% "col", vertex.cex = 4,
-    vertex.border = "white",
-    edge.col = "grey84", edge.lwd = 0.15,
-    mode = "bip", jitter = FALSE,
-    suppress.axes = TRUE, ylim = c(0.2,3.2)
-    )
-text(x=0.8,y=0.5, labels = "Drivers", col = "grey24")
-text(x=2.2,y=0.5, labels = "Regime shifts", col = "grey24")
+mini_dat %>% filter (RS_joined == 'rs1_2') %>%
+    select(tail, Regime.Shift) %>%
+    # network(directed = T, ignore.eval=FALSE, matrix.type = 'edgelist') %>%
+    # ggnet2(edge.color = "color", arrow.size = 1) # no curved edges, I need them
+    igraph::graph_from_data_frame(directed = TRUE) %>%
+    igraph::plot.igraph(edge.curved = FALSE, vertex.shape = c("circle", "circle", "square", "square"),
+        vertex.color = alpha(c(rep("red", 2), rep("blue",2)), 0.7 ), vertex.size = 18,
+        vertex.frame.color = NA, vertex.label.color = "grey84", 
+        layout = matrix(c(1,1,2,2, 2,1,2,1), ncol = 2, nrow = 4) ,
+        main = "joint regime shifts")
+popViewport()
+
+
+m1 <- ggplot(
+    data = as.sociomatrix(x, "paths") %>% as_tibble() %>% mutate(tail = rownames(as.sociomatrix(x))) %>%
+        gather(key = head, value = paths,  1:30),
+    aes(tail, head)) + 
+    geom_raster(aes(fill = paths)) + ylab("") + xlab("") + 
+    scale_fill_gradient2(low = "#FFA50080", mid = "gray84" ,high = "#0000FF80", midpoint = 0, na.value = "grey50") +
+    theme_light (base_size=6) +
+    theme(axis.text.x = element_blank(), axis.text.y = element_blank()) 
+
+pushViewport(viewport(layout.pos.row=1, layout.pos.col=4))
+par(fig = gridFIG(), new = TRUE)
+print(m1, newpage = FALSE)
 popViewport()
 
 ## second panel
 pushViewport(viewport(layout.pos.row=2, layout.pos.col=1))
 par(fig = gridFIG(), new = TRUE)
-plotnet(rs.net(dat = dat, 27))
+mini_dat %>% filter (Regime.Shift == 'rs3') %>%
+    select(tail, head) %>%
+    igraph::graph_from_data_frame(directed = TRUE) %>%
+    igraph::plot.igraph(edge.curved = FALSE,
+        vertex.color = alpha(c("red", rep("purple",3), "red"), 0.7 ), vertex.size = 15,
+        vertex.frame.color = NA, vertex.label.color = "grey84", 
+        #layout = matrix(c(1,1,0.5,1,1, 4,3,2.5,2,1), ncol = 2, nrow = 5) ,
+        main = "regime shift 1")
 title ('b)', adj = 0, cex = 5)
 popViewport()
 
 pushViewport(viewport(layout.pos.row=2, layout.pos.col=2))
 par(fig = gridFIG(), new = TRUE)
-plot(0,0, type = 'n', xlim = c(0,1), ylim = c(0,1), axes = FALSE, ann = FALSE)
-text(0.5,0.5, labels = "{sea surface temperature,\n climate change,\n precipitation,\n water stratification}", cex = 1)
+mini_dat %>% filter (Regime.Shift == 'rs4') %>%
+    select(tail, head) %>%
+    igraph::graph_from_data_frame(directed = TRUE) %>%
+    igraph::plot.igraph(edge.curved = FALSE,
+        vertex.color = alpha(c("red", rep("purple",4)), 0.7 ), vertex.size = 15,
+        vertex.frame.color = NA, vertex.label.color = "grey84", 
+        #layout = matrix(c(0,0,-1,0,1, 3,2,1,0,1), ncol = 2, nrow = 5) ,
+        main = "regime shift 2")
 popViewport()
 
 pushViewport(viewport(layout.pos.row=2, layout.pos.col=3))
 par(fig = gridFIG(), new = TRUE)
-plotnet(rs.net(dat, 14))
+mini_dat %>% filter (RS_joined == 'rs3_4') %>%
+    select(tail, head, color) %>%
+    igraph::graph_from_data_frame(directed = TRUE) %>%
+    igraph::plot.igraph(edge.curved = FALSE,
+        vertex.color = alpha(c("red","gray","red", "gray", "red", rep("gray",4)), 0.7 ), vertex.size = 15,
+        vertex.frame.color = NA, vertex.label.color = "grey84", 
+        #layout = matrix(c(0,0,1,0,0,1,2,3,2,  4,3,2.5,2,1, 2.5, 1, 2.5, 3), ncol = 2, nrow = 9) ,
+        main = "joint regime shifts")
 popViewport()
+
+m2 <- ggplot(
+    data = out, aes( Head, Tail)) +
+    geom_raster(aes(fill = weight)) + ylab("") + xlab("") +
+    scale_fill_gradient2(low = "#FFA50080", mid = "gray84" ,high = "#0000FF80", midpoint = 0, na.value = "grey50") +
+    theme_light(base_size=6) +
+    theme(axis.text.x = element_blank(), axis.text.y = element_blank()) 
+
+pushViewport(viewport(layout.pos.row=2, layout.pos.col=4))
+par(fig = gridFIG(), new = TRUE)
+print(m2, newpage = FALSE)
+popViewport()
+
+
+
+
 ## third row
 
-pushViewport(viewport(layout.pos.row=3, layout.pos.col=1:2))
+pushViewport(viewport(layout.pos.row=3, layout.pos.col=1))
 par(fig = gridFIG(), new = TRUE)
-plotnet2(out_inc[[312]])
+mini_dat %>% filter (Regime.Shift == 'rs5') %>%
+    select(tail, head) %>%
+    igraph::graph_from_data_frame(directed = TRUE) %>%
+    igraph::plot.igraph(edge.curved = c(0,0.5,0.5),
+        vertex.color = alpha(c("red", rep("purple",2)), 0.7 ), vertex.size = 15,
+        vertex.frame.color = NA, vertex.label.color = "grey84", 
+        layout = matrix(c(1,1,1, 3,2,1), ncol = 2, nrow = 3) ,
+        main = "regime shift 1")
 title ('c)', adj = 0, cex = 5)
 popViewport()
 
-
-x.long <- reshape2::melt(out_dat[[312]], id.var="feed.length",
- 		 measure.var= colnames(out_dat[[312]])[c(1:3,5,6)],
- 		 value.name='value')
-
- x.long$value <- as.integer(x.long$value)
- x.long$feed.length <- as.integer(x.long$feed.length)
-
- levels(x.long$variable) <- c("Kelp transitions", "Thermohaline circulation", "Both", "Hidden", "Expected")
-
-# plot it
-
-g <- ggplot(filter(x.long, variable == "Kelp transitions" | variable == "Thermohaline circulation"| variable == "Hidden" ), aes(x=feed.length, y=value), group=variable)
-g <- g + geom_bar(aes(fill= forcats::fct_rev(variable)), position = 'stack', stat = 'identity')  +
-    ylab('Number of feedbacks') + xlab('Feedback length') +
-	#ggtitle(out_inc[[312]] %n% 'name') +
-    theme_minimal(base_size = 4) +
-	theme(legend.position=c(0.75,0.8), legend.key.size  = unit(0.3, "cm")) + ### , plot.title=element_text(size=rel(0.85))
-    scale_fill_manual("Feedbacks",values=c("#EE3B3B","#8A2BE2", "#FF7F00")) +
-    xlim(0, max(x.long[x.long$value > 0, ]$feed.length))
+pushViewport(viewport(layout.pos.row=3, layout.pos.col=2))
+par(fig = gridFIG(), new = TRUE)
+mini_dat %>% filter (Regime.Shift == 'rs6') %>%
+    select(tail, head) %>%
+    igraph::graph_from_data_frame(directed = TRUE) %>%
+    igraph::plot.igraph(edge.curved = c(0,0.5,0.5),
+        vertex.color = alpha(c("red", rep("purple",2)), 0.7 ), vertex.size = 15,
+        vertex.frame.color = NA, vertex.label.color = "grey84", 
+        layout = matrix(c(1,1,1, 1,2,3), ncol = 2, nrow = 3),
+        main = "regime shift 2")
+popViewport()
 
 pushViewport(viewport(layout.pos.row=3, layout.pos.col=3))
+par(fig = gridFIG(), new = TRUE)
+mini_dat %>% filter (RS_joined == 'rs5_6') %>%
+    select(tail, head, color) %>%
+    igraph::graph_from_data_frame(directed = TRUE) %>%
+    igraph::plot.igraph(edge.curved = -0.8,
+        vertex.color = alpha(c("red","purple","red", "purple"), 0.7 ), vertex.size = 15,
+        vertex.frame.color = NA, vertex.label.color = "grey84", 
+        #layout = matrix(c(0,0,1,0,0,1,2,3,2,  4,3,2.5,2,1, 2.5, 1, 2.5, 3), ncol = 2, nrow = 9) ,
+        main = "joint regime shifts")
+popViewport()
+
+m3 <- ggplot(data = df_inc, aes(Tail, Head)) +
+    geom_tile(aes(fill = log(inc))) + ylab("") + xlab("") +
+    scale_fill_gradient(low = "#FFA50080", high = "#0000FF80", na.value = "grey50") +
+    theme_light(base_size=6) +
+    theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+
+
+pushViewport(viewport(layout.pos.row=3, layout.pos.col=4))
 par(mar=c(2,2,2,2))
-print(g, newpage = F)
+print(m3, newpage = F)
 popViewport()
 
 # quartz.save(file="methods_scheme.png", width=7, height=7, pointsize = 7, dpi = 300)

@@ -17,17 +17,20 @@ output:
       collapsed: true
       smooth_scroll: true
     code_folding: hide 
+    
+header-includes:
+- \usepackage{dcolumn}
+- \usepackage{float}
 
-fontsize: 9pt
+fontsize: 8pt
 csl: nature.csl
 bibliography: abstract.bib
 documentclass: article
 linkcolor: blue
 urlcolor: blue
 citecolor: blue
-
 abstract: |
-  Stochastic events can affect the ability of a country to produce and export natural resources such as food. When exposed to such events, an importer country will face a deficit on the expected trade of a product and turn to another training partners to supply its demand. This simple mechanism can therefore couple oscillations on resource exploitation and consumption in far away places of the planet, a phenomenon theorized as telecouplings [@Liu:2015go]. Here we use montly time series of salmon trade to recostruct a network of potential telecoupling effects, this is when the exports dynamics of a country  $c_{i}$ to $c_{j}$ causally affects the dynamics of exports from $c_{k}$ to $c_{j}$. Our results show that non-linear causal effects do not spread more than few degrees of separation in the trade network; and in fact less than 20 time series out of 402 mapped links in the network have a forecasting skill higher than 20% on secondary links. We offer empirical evidence of telecoupling in the salmon trade network as well as an innovative methodological approach to assess causality of non-linear dynamics in networked systems. 
+  Stochastic events can affect the ability of a country to produce and export natural resources such as food. When exposed to such events, an importing country will face a deficit on the expected trade of a product and turn to another trading partner to supply its demand. This simple mechanism can therefore couple oscillations on resource exploitation and consumption in far away places of the planet, a phenomenon theorized as telecouplings1. Here we use montly time series of salmon trade to recostruct a network of potential telecoupling effects, this is when the export dynamics of a country $c_i$ to $c_j$ causally affects the dynamics of exports from $c_k$ to $c_j$. Our results show that non-linear causal effects do not spread more than few degrees of separation in the trade network; and in fact less than 20 time series out of 402 mapped links in the network have a forecasting skill higher than 20% on secondary links. We offer empirical evidence of telecoupling in the salmon trade network as well as an innovative methodological approach to assess causality of non-linear dynamics in networked systems. 
 ---
 
 ```{r setup, include=FALSE}
@@ -49,11 +52,12 @@ library(ggmap)
 library(scales)
 ```
 
-Networked complex systems are suceptible to the spreading of dynamic failures such as black outs in power grids or the collapse of industrial production chains [@Brummitt:2017cg; @Brummitt:2012it]. Scholars have studied this failure phenomena when the structure of the network is well known. However, detecting causal signals on a network is a challenging task because the independence assumption can be violated by the network structure itself. This is, the dynamics of a node or a link over time depends of the adjacent nodes or links and viceversa. Here we use convergent cross mapping, a nonlinear causality detection technique [@Sugihara:2012ku], to identify causal relationships between the dynamics of links on a salmon trade network as a case study. By 2016 salmon trade accounted for 11.6B dollars globally. $93$ countries traded salmon monthly through $406$ bilateral trade relationships. Only in 2016 environmental shocks such as red tides -toxic algae blooms- out of the coast of Chile reduced in the order of tens of thousands tons the exports of Chile world wide, a major exporter of salmon. The question we address is to what extent the export dynamics of a country like Chile have a causal effect on the trade paterns of other trade partners? More generally, which countries trade relationships contain causal information about the dynamics of far away resource dynamics?
+Networked complex systems are suceptible to the spreading of dynamic failures such as black outs in power grids or the collapse of industrial production chains [@Brummitt:2017cg; @Brummitt:2012it]. Scholars have studied this failure phenomena when the structure of the network is well known. However, detecting causal signals on a network is a challenging task because the independence assumption can be violated by the network structure itself. This is, the dynamics of a node or a link over time depends on the adjacent nodes or links and viceversa. Here we use convergent cross mapping, a nonlinear causality detection technique [@Sugihara:2012ku], to identify causal relationships between the dynamics of links in the salmon trade network as a case study. By 2016 salmon trade accounted for 11.6B dollars globally and $93$ countries traded salmon monthly through $406$ bilateral trade relationships. In 2016 a red tide event (toxic algae bloom) off the coast of Chile, a major exporter of salmon, reduced Chile’s exports on the order of tens of thousands tons. The question we address is to what extent the export dynamics of a country like Chile have a causal effect on the trade paterns of other trade partners? More generally, which countries’ trade relationships contain causal information about the dynamics of far away resource dynamics?
 
-To study these questions we used UN Comtrade monthly records for salmon related commodities. We aggregated all commodities by traded weight in Tones and created a network where two countries are link together if they traded more than $2.7$ Tons (or 1 in log-scale). We used time series from 2014 to the present discarding months were data has not been completely reported (typically 2-3 months closer to the present). All time series were normalized to zero mean and unity variance, and each of them represent the dynamics of a link in the network. Convergent cross mapping algorithms were used to unravel whether the trade time series from country $c_{j}$ to country  $c_{k}$ has information of the dynamics of trade from countries  $c_{i}$ to $c_{j}$. In particular, we measured $\rho$ the forecasting skill of one time series over another [@Sugihara:2012ku] for all pair-wise combination of links in the network. If $\rho$ is positive and significantly different from zero we can conclude that the trade from $c_{i}$ to $c_{j}$ has a causal effect on the trade from $c_{j}$ to $c_{k}$.
+To study these questions, we used UN Comtrade monthly records for salmon commodities. We aggregated all commodities by traded weight in tonnes and created a network  where two countries are linked together if they traded more than $2.7$ tonnes  (or 1 in log-scale). We used time series from 2014 to the present discarding months were data has not been completely reported (typically 2-3 months closest to the present). All time series were normalized to zero mean and unity variance, and each represents the dynamics of a link in the network. Convergent cross mapping algorithms were used to unravel whether the trade time series from country $c_j$ to country $c_k$ has information on the dynamics of trade from countries $c_i$ to $c_j$. In particular, we measured $\rho$ (the forecasting skill of one time series over another [@Sugihara:2012ku]) for all pair-wise combinations of links in the network. If $\rho$ is positive and significantly different from zero we can conclude that the trade from $c_i$ to $c_j$ has a causal effect on the trade from $c_j$ to $c_k$.
 
-Our results show that only few pairwise combination of links do have positive forecasting skill [$\rho$], in other words, dynamics on exports of few countries have a causal effect on the resource exploitation dynamics of other countries far away. Forecasting skill of a link is weakely correlated to the average weight traded, and with the indegree of the salmon importing node (Fig 1). 
+Our results show that only few pairwise combinations of links have positive forecasting skill [$\rho$]. In other words, dynamics of exports from few countries have a causal effect on the resource exploitation dynamics of other countries far away. Forecasting skill of a link is weakely correlated to the average weight traded and the indegree of the salmon importing node (Fig 1).
+
 
 ```{r data, include = FALSE}
 ## load dataset
@@ -119,7 +123,7 @@ net_dat_filtered <-  net_dat %>%
 
 ```
 
-```{r Figure_1, cache = TRUE, echo = FALSE, error=FALSE, warning=FALSE, message=FALSE, fig.height = 4, fig.width = 6, fig.align = 'center', fig.cap = "Global salmon network. Correlations between the mean forecasting skill $\rho$ and the degree ratio (a) or the average traded tons (b). The complete salmon trade network (c) shows that not all links have positive values of $\rho$, only few countries can affect other's trading dynamics (d). Europe contains a strongly coupled cluster with positive forecasting skill.", dev.args = list(pointsize = 4)}
+```{r Figure_1, fig.width=5, fig.height=3.5, cache = TRUE, echo = FALSE, error=FALSE, warning=FALSE, message=FALSE, fig.cap = "Global salmon network. Correlations between forecasting skill and the degree ratio (a)  and average traded tons (b). The complete salmon trade network (c) shows that not all links have positive forecasting skill, only few countries can affect other's trading dynamics (d for rho > 0.1). Europe contains a strongly coupled cluster with positive forecasting skill.", dev.args = list(pointsize = 4)}
 
 ## correlations of rho
 # dfM_rho %>%
@@ -145,11 +149,11 @@ plot_a <- net_dat_filtered %>%
       xmax = network_mean_rho + net_var_rho, y = net_ratio_degree), color = "grey84", alpha = 0.8) +
     geom_point(aes(color = avg_log_weight), alpha = 0.3) + # scale_color_continuous(na.value = alpha("white", 0.1)) +
   geom_smooth(method = "lm", se = FALSE) + ggtitle("a") +
-    labs(x = "degree ratio", y = "mean forecasting skill") +
+    labs(x = "degree ratio", y = "forecasting skill") +
   coord_flip() +
     guides(colour = guide_colorbar("average traded tons (log)")) + 
   theme_light(base_size = 6) + 
-    theme(legend.position = "right", legend.key.size = unit(0.2, "cm"))
+    theme(legend.position = "bottom", legend.key.size = unit(0.2, "cm"))
 
 # d_rho <- net_dat_filtered %>% ggplot(aes(rho)) +
 #     geom_density(fill = "orange", alpha = 0.7, color = "orange",
@@ -180,7 +184,7 @@ plot_b <- link_attr %>% filter(!is.na(net_var_rho)) %>%
     labs(x = "mean forekasting skill", y = "average traded tons (log)") +
     guides(colour = guide_colorbar("mean rho")) + 
   theme_light(base_size = 6) + 
-    theme(legend.position = "right", legend.key.size = unit(0.2, "cm"))
+    theme(legend.position = "bottom", legend.key.size = unit(0.2, "cm"))
 
 
 ## create map
@@ -216,22 +220,22 @@ g1 <- world +
     geom_segment(data = link_attr,  #%>% filter(network_mean_rho > 0),
         aes(x=x, y=y, xend = xend, yend = yend, alpha = avg_log_weight, colour = network_mean_rho), size = 0.25,
         arrow = arrow(ends = "last", type = "closed", length = unit(0.1, "cm"))) +
-    geom_point(data = nodes_attr, aes(lon, lat, size = degree), color = "purple", alpha = 0.3) +
-    geom_point(data = nodes_attr, aes(lon, lat, size = indegree), color = "orange", alpha = 0.3) +
-    geom_text(data = nodes_attr, mapping = aes(x = lon, y = lat, label = ISO), vjust = 0, nudge_y = 0, check_overlap = TRUE, size = 1.5, color = "grey10") +
+    # geom_point(data = nodes_attr, aes(lon, lat, size = degree), color = "purple", alpha = 0.3) +
+    # geom_point(data = nodes_attr, aes(lon, lat, size = indegree), color = "orange", alpha = 0.3) +
+    # geom_text(data = nodes_attr, mapping = aes(x = lon, y = lat, label = ISO), vjust = 0, nudge_y = 0, check_overlap = TRUE, size = 1.5, color = "grey10") +
     scale_colour_gradient2(low = muted("red"), mid = "grey50",
       high = muted("blue"), midpoint = 0, space = "Lab",
       na.value = "black", guide = "colourbar") + ggtitle("c") + 
     guides(
-        size = guide_legend("Degree"),
-        colour = guide_colorbar("mean rho"),
-        alpha = guide_legend("mean weight\n log Ton")
+        # size = guide_legend("Degree"),
+        colour = guide_colorbar("mean rho",barwidth = 5),
+        alpha = guide_legend("mean weight\n [log Tons]")
     ) +
     theme_void(base_size = 6) + 
     theme(legend.position = "bottom", legend.key.size = unit(0.2, "cm"))
 
 g2 <- world +
-    geom_segment(data = link_attr %>% filter(network_mean_rho > 0),
+    geom_segment(data = link_attr %>% filter(network_mean_rho > 0.1),
         aes(x=x, y=y, xend = xend, yend = yend, alpha = avg_log_weight, colour = network_mean_rho), size = 0.25,
         arrow = arrow(ends = "last", type = "closed", length = unit(0.1, "cm"))) +
     # geom_point(data = nodes_attr, aes(lon, lat, size = degree), color = "purple", alpha = 0.3) +
@@ -242,8 +246,8 @@ g2 <- world +
       na.value = "black", guide = "colourbar", name = "mean rho") + ggtitle("d") +
     guides(
         #size = guide_legend("Degree"),
-        colour = guide_colorbar("mean rho"),
-        alpha = guide_legend("mean weight\n log Ton")
+        colour = guide_colorbar("mean rho", barwidth = 5),
+        alpha = guide_legend("mean weight\n [log Tons]")
     ) +
     theme_void(base_size = 6) + 
     theme(legend.position = "bottom", legend.key.size = unit(0.2, "cm"))
@@ -258,19 +262,21 @@ net2 %v% "indegree" <- degree(net2, cmode = "indegree")
 net2 %v% "outdegree" <- degree(net2, cmode = "outdegree") 
 net2 %v% "degree" <- degree(net2, cmode = "freeman")
 
+# 
+# # plot.network(net2, label = network.vertex.names(net2))
+# ggnet2(net2, size ="outdegree", label = TRUE, label.size = 3, 
+#        arrow.size = 4, arrow.type = "closed", arrow.gap = 0.01,
+#        node.alpha = 0.4, edge.size = "rho", #edge.label = "b",
+#        edge.label.size = 2) 
 
-# plot.network(net2, label = network.vertex.names(net2))
-ggnet2(net2, size ="outdegree", label = TRUE, label.size = 3, 
-       arrow.size = 4, arrow.type = "closed", arrow.gap = 0.01,
-       node.alpha = 0.4, edge.size = "rho", #edge.label = "b",
-       edge.label.size = 2) 
 
 ## Plots
 source('~/Dropbox/Code/multiplot.R')
 
-layout <- matrix(c(1,2,2,3,4,4), ncol = 3, nrow = 2, byrow = T)
+layout <- matrix(c(1:4), ncol = 2, nrow = 2, byrow = T)
 multiplot(plotlist = list(plot_a, g1, plot_b, g2), layout = layout)
 
 
 ```
-Our findings point out to important governance implications for the management of marine resources such as salmon. If two countries far apart can synchronize their resource explotation dynamics given they trade and respond to the trading needs of common partners, it means that they can co-evolve managerial frameworks that take into account teleconnections. In other words, our results shades light on which trading communities can avoid governance misfit [] by designing managerial options together.
+
+Our findings point to important governance implications for the management of marine resources such as salmon. If two countries far apart can synchronize their resource explotation dynamics given they trade and respond to the trading needs of common partners, it means they can co-evolve managerial frameworks that take into account teleconnections. In other words, our results shed light on which trading communities can avoid governance misfit [@Young:2008vq] by designing managerial options together. In particular, the EU forms a strong cluster of trading countries that influence each other. Further work is needed to explore the instabilities created by the cyclical structure within this hub, as well as the role of trade in alternative commodities.
