@@ -66,9 +66,9 @@ dat <- as_tibble(
     "~/Documents/Projects/Salmon_Jessica/data/salmon_agg_clean_data.csv"))
 ## clean 
 # make the period factor so you can facet
-dat <- mutate(dat,
+dat <- dat %>% mutate(
     fac_period = factor(Period),
-    log_weight = log(1+Agg.Weight))
+    log_weight = log1p(Agg.Weight))
 
 # get rid of weird reported areas
 dat <- filter(dat, Exporter != "Areas, nes" , Exporter != "Other Asia, nes" , Exporter != "Other Europe, nes" , Importer != "Areas, nes" , Importer != "Other Asia, nes" , Importer != "Other Europe, nes" , Importer != "Other Africa, nes") %>% droplevels()
@@ -107,7 +107,7 @@ net_dat <- left_join(dfM_rho %>%
     group_by(link) %>%
     mutate(mean_rho = mean(rho, na.rm = TRUE),
       var_rho = var(rho, na.rm = TRUE),
-      ratio_cases = sum(rho > 0, na.rm = TRUE) / 406),
+      ratio_cases = sum(rho > 0.1, na.rm = TRUE) / 406),
     net_dat)
 
 
@@ -115,9 +115,12 @@ net_dat_filtered <-  net_dat %>%
     separate(link, into = c("a", "b"), remove = FALSE) %>%
     separate(link_affected, into = c("c", "d"), remove = FALSE) %>%
     filter(b == d) %>% # note the df is already grouped by link.
-    mutate(network_mean_rho = mean(rho, na.rm = TRUE),
+    ungroup() %>%
+    unite(link_2path, a, c, sep = "_", remove = FALSE) %>%
+    group_by(link_2path) %>%
+        mutate(network_mean_rho = mean(rho, na.rm = TRUE),
       net_var_rho = var(rho, na.rm = TRUE),
-      net_ratio_degree = sum(rho > 0, na.rm = TRUE) / n())
+      net_ratio_degree = sum(rho > 0.1, na.rm = TRUE) / n()) 
 
 
 
@@ -141,15 +144,15 @@ net_dat_filtered <-  net_dat %>%
 #   theme_light()
 
 
-plot_a <- net_dat_filtered %>%
+plot_a <- net_dat_filtered %>% filter(!is.na(avg_log_weight)) %>% 
   ggplot(aes(x = network_mean_rho, y = net_ratio_degree)) +
-  geom_hline(yintercept = 0.5, color = "orange", linetype = 2) +
+  geom_hline(yintercept = 0, color = "orange", linetype = 2) +
   geom_vline(xintercept = 0, color = "orange", linetype = 2) +
   geom_errorbarh(aes(xmin = network_mean_rho - net_var_rho,
       xmax = network_mean_rho + net_var_rho, y = net_ratio_degree), color = "grey84", alpha = 0.8) +
     geom_point(aes(color = avg_log_weight), alpha = 0.3) + # scale_color_continuous(na.value = alpha("white", 0.1)) +
   geom_smooth(method = "lm", se = FALSE) + ggtitle("a") +
-    labs(x = "degree ratio", y = "forecasting skill") +
+    labs(y = "degree ratio", x = "forecasting skill") +
   coord_flip() +
     guides(colour = guide_colorbar("average traded tons (log)")) + 
   theme_light(base_size = 6) + 
@@ -211,7 +214,8 @@ nodes_attr$degree <- degree(net, cmode = "freeman")
 
 # create coordenates for segments  = links in network
 link_attr <- link_attr %>%
-    separate(link, into = c("exporter", "importer"), remove = FALSE) %>% left_join(., (nodes_attr %>% select(ISO, lon, lat)), by = c("exporter" = "ISO")) %>% rename(x = lon, y = lat)
+    separate(link, into = c("exporter", "importer"), remove = FALSE) %>% 
+    left_join(., (nodes_attr %>% select(ISO, lon, lat)), by = c("exporter" = "ISO")) %>% rename(x = lon, y = lat)
 # now for the end pointsize
 link_attr <- link_attr %>%
     left_join(., (nodes_attr %>% select(ISO, lon, lat)), by = c("importer" = "ISO")) %>% rename(xend = lon, yend = lat)
@@ -254,7 +258,7 @@ g2 <- world +
 
 ## Why not creating a network explicitely of a-{b}-c
 net2 <- net_dat_filtered %>%
-    filter(!is.na(rho), rho > 0.5) %>% ungroup() %>%
+    filter(!is.na(rho), rho > 0.1) %>% ungroup() %>%
     select(a,c,rho, b) %>% 
     network(., directed = TRUE, ignore.eval= FALSE, matrix.type = 'edgelist')
 
@@ -264,10 +268,45 @@ net2 %v% "degree" <- degree(net2, cmode = "freeman")
 
 # 
 # # plot.network(net2, label = network.vertex.names(net2))
-# ggnet2(net2, size ="outdegree", label = TRUE, label.size = 3, 
+# ggnet2(net2, size ="outdegree", label = TRUE, label.size = 3,
 #        arrow.size = 4, arrow.type = "closed", arrow.gap = 0.01,
 #        node.alpha = 0.4, edge.size = "rho", #edge.label = "b",
-#        edge.label.size = 2) 
+#        edge.label.size = 2)
+
+df_net <- data_frame(
+    node = network.vertex.names(net),
+    indegree = degree(net, cmode = "indegree", gmode = "digraph"),
+    outdegree = degree(net, cmode = "outdegree", gmode = "digraph")
+)
+
+
+### another map
+link_attr <- net_dat_filtered %>%
+    filter(!is.na(rho), rho > 0.1) %>% ungroup() %>%
+    select(a,c,rho, b) %>% group_by(a,c) %>% 
+     summarize(mean_rho = mean(rho, na.rm = T)) %>% 
+     arrange(desc(mean_rho)) %>% # add coordinates
+    left_join(., (nodes_attr %>% select(ISO, lon, lat)), by = c("a" = "ISO")) %>% rename(x = lon, y = lat) %>%
+    left_join(., (nodes_attr %>% select(ISO, lon, lat)), by = c("c" = "ISO")) %>% rename(xend = lon, yend = lat)
+
+g3 <- world +
+    geom_segment(data = link_attr %>% filter(mean_rho > 0.1),
+        aes(x=x, y=y, xend = xend, yend = yend,  colour = mean_rho), size = 0.25,
+        arrow = arrow(ends = "last", type = "closed", length = unit(0.1, "cm"))) +
+    # geom_point(data = nodes_attr, aes(lon, lat, size = degree), color = "purple", alpha = 0.3) +
+    # geom_point(data = nodes_attr, aes(lon, lat, size = indegree), color = "orange", alpha = 0.3) +
+    # geom_text(data = nodes_attr, mapping = aes(x = lon, y = lat, label = ISO), vjust = 0, nudge_y = 0, check_overlap = TRUE, size = 1.5, color = "grey10") +
+    scale_colour_gradient2(low = muted("red"), mid = "grey50",
+      high = muted("blue"), midpoint = 0, space = "Lab",
+      na.value = "black", guide = "colourbar", name = "mean rho") + ggtitle("d") +
+    guides(
+        #size = guide_legend("Degree"),
+        colour = guide_colorbar("mean rho", barwidth = 5),
+        alpha = guide_legend("mean weight\n [log Tons]")
+    ) +
+    theme_void(base_size = 6) + 
+    theme(legend.position = "bottom", legend.key.size = unit(0.2, "cm"))
+
 
 
 ## Plots

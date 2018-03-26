@@ -56,7 +56,7 @@ Currently I'm using my local version of your file, you just have to change the p
 # make the period factor so you can facet
 dat <- mutate(dat,
     fac_period = factor(Period),
-    log_weight = log(1+Agg.Weight))
+    log_weight = log1p(Agg.Weight))
 
 # get rid of weird reported areas
 dat <- filter(dat, Exporter != "Areas, nes" , Exporter != "Other Asia, nes" , Exporter != "Other Europe, nes" , Importer != "Areas, nes" , Importer != "Other Asia, nes" , Importer != "Other Europe, nes" , Importer != "Other Africa, nes") %>% droplevels()
@@ -183,7 +183,7 @@ ggplot(df3, aes(lib_size, rho, group = xmap)) +
   geom_hline(yintercept = 0, color = "black", linetype = 2) +
   geom_line(aes(color = xmap)) +
   labs(x = "Library size", y = "Forecasting skill") + # expression(rho)
-  theme_light(base_size=7) + theme(legend.position = "bottom")
+  theme_light(base_size=10) + theme(legend.position = "bottom")
 ```
 
 I did explore the same excercise for the 16 links of incoming trade for the USA (where we have more or less complete data). First we check again for embedding dimensions, prediction decay and nonlinearity test. 
