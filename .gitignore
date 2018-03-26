@@ -2,3 +2,13 @@
 .Rhistory
 .RData
 .Ruserdata
+.Rapp.history
+*.html
+*.docx
+*.pdf
+*.tex
+*.csv
+*.cls
+*.csl
+*.png
+
