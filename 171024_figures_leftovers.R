@@ -556,7 +556,7 @@ g1 <- ggplot(
     data = as.sociomatrix(x, "paths") %>% as_tibble() %>% mutate(tail = rownames(as.sociomatrix(x))) %>%
         gather(key = head, value = paths,  1:30) %>% mutate(tail = as.factor(tail) %>% forcats::fct_rev()),
     aes(tail, paths)) +
-    geom_boxplot(fill = alpha("blue", 0.5), color = "blue", outlier.alpha = 0.5, 
+    geom_boxplot(fill = alpha("blue", 0.5), color = "blue", outlier.alpha = 0.5,
                  outlier.size = 0.8) +
     geom_point(
         data = bip.edgelist %>% mutate(value = 1) %>%
@@ -565,3 +565,139 @@ g1 <- ggplot(
         aes(rs, paths), color = "purple", size = 1.5, shape = 12
     ) + coord_flip() +  xlab("regime shifts") + ylab("number of drivers") + ggtitle("a)") +
     theme_minimal(base_size = 6)
+
+
+######################################
+# Previous Figure 6
+# J180426
+
+df_fork <- as.sociomatrix(x, "paths") %>% as_tibble() %>% mutate(tail = rownames(as.sociomatrix(x))) %>%
+        gather(key = head, value = drivers,  1:30) %>% mutate(tail = as.factor(tail) %>% forcats::fct_rev()) %>%
+    mutate(drivers = ifelse(drivers > 0, 1, 0))
+# domino <- as.sociomatrix(dom_net)
+# inconvenient <- as.sociomatrix(inc_net)
+
+# inconvenient <- cbind(inconvenient, rep(0,29))
+# inconvenient <- rbind(inconvenient, rep(0,30))
+#
+# colnames(inconvenient)[30] <- "Sprawling vs compact city"
+# rownames(inconvenient)[30] <- "Sprawling vs compact city"
+#
+# inconvenient <- clean.and.order(inconvenient)
+
+# all <- as.data.frame(fork + domino + inconvenient)
+# all$from <- rownames(all)
+# df_all <- gather(all,  1:30, key = to, value = count)
+
+
+df_domino <- as_tibble(out) %>% rename(tail = Tail, head = Head) %>%
+    mutate(domino = ifelse(weight > 0, 1, 0)) %>% select(-driv2feed, -weight)
+df_hidden <- as_tibble(df_inc3) %>% rename(tail = Tail, head = Head) %>%
+    mutate(hidden = ifelse(inc > 0, 1, 0)) %>% select(-inc)
+
+
+df_all <- left_join(df_fork, df_domino) %>% left_join(df_hidden) %>%
+    group_by(tail,head) %>%
+    mutate(all = sum(drivers, domino, hidden),
+           type = ifelse(is.na(all), NA,
+                         ifelse(all == 3, "all",
+                                ifelse(all == 2, "multiple",
+                                       ifelse(all == 1 && drivers == 1, "drivers sharing",
+                                              ifelse(all == 1 && domino == 1, "domino effect",
+                                                     ifelse(all == 1 && hidden == 1, "hidden feedback", NA)
+                                                     )
+                                              )
+                                       )
+                                )
+           )
+    )
+
+df_all$type <- as.factor(df_all$type) %>% forcats::fct_relevel(
+    "drivers sharing", "domino effect", "hidden feedback", "multiple", "all") %>%
+    forcats::fct_rev()
+
+
+### Experiment with maps as summarising figure.
+## Here is the code copied from chunk below to create the world maps: re do the coordinates only with RS used in the paper.
+place <- c(
+    "Svalbard", # "Arctic Benthos Borealisation"
+    "North pole",#"Arctic Sea-Ice Loss"
+    "Chesapeake bay", #"Bivalves collapse"
+    "Serengeti National Park",# "Bush encroachment"
+    "Alaska",#"Coniferous to deciduous forest"
+    "Great Barrier Reef",#"Coral transitions"
+    "Sahara desert", # "Desertification"
+    "Southern Ocean",#"Fisheries collapse"
+    "Wolderwijd",#"Floating plants"
+    "Amazon, Brazil",#"Forest to savanna"
+    "laguna de Fuquene",#"Freshwater eutrophication"
+    "Greenland",#"Greenland Ice Sheet collapse"
+    "Gulf of Mexico",# "Hypoxia"
+    "Farallon Islands",#"Kelps transitions"
+    "Thailand",#"Mangroves transitions"
+    "Baltic Sea",# "Marine eutrophication"
+    "Benguela, Namibia",#"Marine foodwebs"
+    "India",#"Moonson"
+    "Finland",# "Peatland transitions"
+    "Arctic ocean",#"Primary production Arctic Ocean"
+    "Lena river, Russia",#"River channel change"
+    "Elizabeth River, Portsmouth, VA",# "Salt marshes to tidal flats"
+    "Turks and Caicos Islands",#"Seagrass transitions"
+    "Australia",#"Soil Salinization"
+    "Los Angeles",# "Sprawling vs compact city"
+    "Pleistocene Park, Sakha Republic, Russia",#"Steppe to Tundra"
+    "Iceland",#"Thermohaline circulation"
+   "Russkoye Ustye, Russia", # "Thermokarst lakes"
+    "Yukon",#"Tundra to forest"
+    "West Antartica" #"WAIS"
+              )
+#
+# rs_coords <- tibble(name = rsdb$name, place)
+# coord <- geocode(place, source = "google")
+#
+# ## repeat until complete!
+# coord[is.na(coord$lon),] <- geocode(place[is.na(coord$lon)], source = "google")
+#
+# rs_coords <- rs_coords %>% mutate(
+#     x = coord$lon,
+#     y = coord$lat
+# )
+
+
+# write.csv(rs_coords, file = 'rs_coords_paper.csv' )
+
+rs_coords <- read.csv(file = '~/Documents/Projects/Cascading Effects/Domino/rs_coords_paper.csv', dec = '.')
+
+## correct some manually
+rs_coords[rs_coords$name == "Arctic Sea-Ice Loss", 3:4] <- c(0, 80)
+rs_coords[rs_coords$name == "Fisheries collapse", 3:4] <- c(-80, -67)
+rs_coords[rs_coords$name == "Tundra to forest", 3:4] <- c(-110, 60)
+rs_coords[rs_coords$name == "Salt marshes to tidal flats", 3:4] <- c(-76.34355, 26.92487)
+
+
+world <- map_data('world')
+# world <- fortify(world)
+
+m <- ggplot(world, aes(long, lat)) +
+    geom_polygon(fill="grey90", aes(group = group)) +
+    geom_path(color="white",aes(group=group), size = 0.2) +
+    coord_equal() + theme_void(base_size = 7, base_family = "Helvetica")
+
+## Once the map is created I need to merge the coordinates and the data frame for all cascading effects to create the networks:
+
+df_all <- df_all %>% left_join(
+    select(rs_coords, -place), by = c("head" = "name")) %>%
+    rename(xend = x, yend = y) %>%
+    left_join(select(rs_coords,-place), by = c("tail" = "name"))
+
+mp_all <- m + geom_segment(data = df_all %>% filter(!is.na(type), type != "multiple"),
+                 aes(x = x, y = y, xend = xend, yend = yend), alpha = 0.2, size = 0.2) +
+    # geom_point(data = rs_coords, aes(x,y)) +
+    geom_text(data = left_join(rs_coords, df_rs_type, by = c("name" = "tail") ) %>%
+                  rename(rstype = type),
+              aes(x,y, label = name, color = rstype), size = 1) +
+    scale_color_manual("Ecosystem type",values = c("blue", "purple", "red","orange")) +
+    theme_void(base_size = 7) + facet_wrap(~type) +
+    theme(legend.position = "bottom")
+
+mp_all
