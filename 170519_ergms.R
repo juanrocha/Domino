@@ -251,14 +251,14 @@ key <- combn(seq(1, length(levels(dat$Regime.Shift))),2)
 out <- list()
 for (i in 1:dim(key)[2]){
     # drivers in regime shift i
-    x1 <- (out_dom[[key[1,i]]] %v% 'vertex.names') [out_dom[[key[1,i]]] %v% 'col' == "#E41A1C"]
+    x1 <- (out_dom[[key[1,i]]] %v% 'vertex.names') [out_dom[[key[1,i]]] %v% 'col' == "#FFD92F"]
     # feedback variables in regime shift j
-    y1 <- (out_dom[[key[2,i]]] %v% 'vertex.names') [out_dom[[key[2,i]]] %v% 'col' != "#E41A1C"]
+    y1 <- (out_dom[[key[2,i]]] %v% 'vertex.names') [out_dom[[key[2,i]]] %v% 'col' != "#FFD92F"]
 
     # drivers in regime shift j
-    x2 <- (out_dom[[key[2,i]]] %v% 'vertex.names') [out_dom[[key[2,i]]] %v% 'col' == "#E41A1C"]
+    x2 <- (out_dom[[key[2,i]]] %v% 'vertex.names') [out_dom[[key[2,i]]] %v% 'col' == "#FFD92F"]
     # feedback variables in regime shift i
-    y2 <- (out_dom[[key[1,i]]] %v% 'vertex.names') [out_dom[[key[1,i]]] %v% 'col' != "#E41A1C"]
+    y2 <- (out_dom[[key[1,i]]] %v% 'vertex.names') [out_dom[[key[1,i]]] %v% 'col' != "#FFD92F"]
 
     # resulting interactions
     df1 <- data.frame(Tail = out_dom[[key[2,i]]] %n% 'name',
@@ -390,8 +390,8 @@ fit.null2 <- suppressMessages(
         )
 
 fit.w2 <- suppressMessages(
-    ergm(dom_net ~ nonzero + sum + edgecov(dom_net,'landuse') +
-    edgecov(dom_net,'ecotype') + edgecov(dom_net,'ecoprocess') + edgecov(dom_net,'prov_service') + edgecov(dom_net,'reg_service') + edgecov(dom_net,'cult_service') + edgecov(dom_net,'hwb') + edgecov(dom_net,'space_scale')+ edgecov(dom_net,'time_scale') + edgecov(dom_net,'reversibility') + edgecov(dom_net,'evidence'),
+    ergm(dom_net ~ nonzero + sum + edgecov(dom_net,'landuse', form = "sum") +
+    edgecov(dom_net,'ecotype', form = "sum") + edgecov(dom_net,'ecoprocess', form = "sum") + edgecov(dom_net,'prov_service', form = "sum") + edgecov(dom_net,'reg_service', form = "sum") + edgecov(dom_net,'cult_service', form = "sum") + edgecov(dom_net,'hwb', form = "sum") + edgecov(dom_net,'space_scale', form = "sum")+ edgecov(dom_net,'time_scale', form = "sum") + edgecov(dom_net,'reversibility', form = "sum") + edgecov(dom_net,'evidence', form = "sum"),
     response ='weight', reference = ~Poisson,
     control = control.ergm(MCMLE.trustregion=1000))
     )
@@ -404,25 +404,46 @@ fit.w2 <- suppressMessages(
 #     ) ## this simpler fit is not better than the w2
 
 fit.w2a <- suppressMessages(
-    ergm(dom_net ~ nonzero + sum + edgecov(dom_net,'landuse') +
-    edgecov(dom_net,'ecotype') + edgecov(dom_net,'ecoprocess') + edgecov(dom_net,'prov_service') + edgecov(dom_net,'reg_service') + edgecov(dom_net,'cult_service') + edgecov(dom_net,'hwb') +
-	nodefactor('space_range') + nodefactor('time_range') +
-	nodematch('space_range', diff = TRUE)+ nodematch('time_range', diff = FALSE) + edgecov(dom_net,'reversibility') + edgecov(dom_net,'evidence'),
+    ergm(dom_net ~ nonzero + sum + edgecov(dom_net,'landuse', form = "sum") +
+    edgecov(dom_net,'ecotype', form = "sum") + edgecov(dom_net,'ecoprocess', form = "sum") + edgecov(dom_net,'prov_service', form = "sum") + edgecov(dom_net,'reg_service', form = "sum") + edgecov(dom_net,'cult_service', form = "sum") + edgecov(dom_net,'hwb', form = "sum") +
+	nodefactor('space_range', form = "sum") + nodefactor('time_range', form = "sum") +
+	nodematch('space_range', diff = FALSE, form = "sum")+ nodematch('time_range', diff = FALSE, form = "sum") + 
+    edgecov(dom_net,'reversibility', form = "sum") + edgecov(dom_net,'evidence', form = "sum"),
     response ='weight', reference = ~Poisson,
     control = control.ergm(MCMLE.trustregion=1000))
     )
 
 fit.w2b <- suppressMessages(
-    ergm(dom_net ~ nonzero + sum + edgecov(dom_net,'landuse') +
-    edgecov(dom_net,'ecotype') + edgecov(dom_net,'ecoprocess') + edgecov(dom_net,'prov_service') + edgecov(dom_net,'reg_service') + edgecov(dom_net,'cult_service') + edgecov(dom_net,'hwb') +
-	nodeifactor('space_range') + nodeifactor('time_range') +
-	nodeofactor('space_range') + nodeofactor('time_range') +
-	nodematch('space_range', diff = TRUE)+ nodematch('time_range', diff = FALSE) + edgecov(dom_net,'reversibility') + edgecov(dom_net,'evidence'),
+    ergm(dom_net ~ nonzero + sum + edgecov(dom_net,'landuse', form = "sum") +
+    edgecov(dom_net,'ecotype', form = "sum") + edgecov(dom_net,'ecoprocess', form = "sum") + edgecov(dom_net,'prov_service', form = "sum") + edgecov(dom_net,'reg_service', form = "sum") + edgecov(dom_net,'cult_service', form = "sum") + edgecov(dom_net,'hwb', form = "sum") +
+	nodeifactor('space_range', form = "sum") + nodeifactor('time_range', form = "sum") +
+	nodeofactor('space_range', form = "sum") + nodeofactor('time_range', form = "sum") +
+	nodematch('space_range', diff = TRUE, form = "sum")+ nodematch('time_range', diff = FALSE, form = "sum") + 
+    edgecov(dom_net,'reversibility', form = "sum") + edgecov(dom_net,'evidence', form = "sum"),
     response ='weight', reference = ~Poisson,
     control = control.ergm(MCMLE.trustregion=1000))
     )
+### J180910: I'm trying to fit a model with nodemix, which is the term that would allow us to see more clearly
+## cross-scale interactions: whether a link is more likely between nodes with different types of scale attributes.
+## The mixingmatrix(dom_net, "time_range") reveals there is zeroes, and I get errors of singular matrices.
+## But I do get the model fit without extra terms (sometimes). In any case I don't trust it - so let's keep the
+## original specification on the paper.
 
-summary(fit2); summary(fit.null2); summary(fit.w2); summary(fit.w2a)
+fit.w2c <- suppressMessages(
+    ergm(
+        dom_net ~ nonzero + sum + #edgecov(dom_net,'landuse', form = "sum") +
+        #edgecov(dom_net,'ecotype', form = "sum") + edgecov(dom_net,'ecoprocess', form = "sum") + edgecov(dom_net,'prov_service', form = "sum") + edgecov(dom_net,'reg_service', form = "sum") + edgecov(dom_net,'cult_service', form = "sum") + edgecov(dom_net,'hwb', form = "sum") +
+        #nodefactor('space_range', form = "sum") + nodefactor('time_range', form = "sum") +
+        #nodematch('space_range', diff = TRUE, form = "sum")+ nodematch('time_range', diff = FALSE, form = "sum") + 
+        nodemix("space_range", form = "sum") + 
+        nodemix("time_range", form = "sum") #+
+        #edgecov(dom_net,'reversibility', form = "sum") + edgecov(dom_net,'evidence', form = "sum")
+        ,
+    response ='weight', reference = ~Poisson,
+    control = control.ergm(MCMLE.trustregion=1000))
+)
+
+summary(fit2); summary(fit.null2); summary(fit.w2); summary(fit.w2a); summary(fit.w2b); summary(fit.w2c)
 
 ##### Ergms for inconvenient feedbacks
 
@@ -613,23 +634,46 @@ fit.null3 <- suppressMessages(
 )
 
 fit.w3 <- suppressMessages(
-    ergm(inc_net ~ nonzero + sum + edgecov(inc_net,'landuse') +
-    edgecov(inc_net,'ecotype') + edgecov(inc_net,'ecoprocess') + edgecov(inc_net,'prov_service') + edgecov(inc_net,'reg_service') + edgecov(inc_net,'cult_service') + edgecov(inc_net,'hwb') + edgecov(inc_net, 'space_scale')+ edgecov(inc_net,'time_scale') + edgecov(inc_net,'reversibility') + edgecov(inc_net,'evidence'),
+    ergm(inc_net ~ nonzero + sum + edgecov(inc_net,'landuse', form = 'sum') +
+    edgecov(inc_net,'ecotype', form = 'sum') + edgecov(inc_net,'ecoprocess', form = 'sum') + edgecov(inc_net,'prov_service', form = 'sum') + edgecov(inc_net,'reg_service', form = 'sum') + edgecov(inc_net,'cult_service', form = 'sum') + edgecov(inc_net,'hwb', form = 'sum') + edgecov(inc_net, 'space_scale', form = 'sum')+ edgecov(inc_net,'time_scale', form = 'sum') + edgecov(inc_net,'reversibility', form = 'sum') + edgecov(inc_net,'evidence', form = 'sum'),
     response ='inc', reference = ~Poisson,
     control = control.ergm(MCMLE.trustregion=1000)))
 
 fit.w3a <- suppressMessages(
-    ergm(inc_net ~ nonzero + sum + edgecov(inc_net,'landuse') +
-    edgecov(inc_net,'ecotype') + edgecov(inc_net,'ecoprocess') + edgecov(inc_net,'prov_service') + edgecov(inc_net,'reg_service') + edgecov(inc_net,'cult_service') + edgecov(inc_net,'hwb') +
+    ergm(inc_net ~ nonzero + sum + edgecov(inc_net,'landuse', form = 'sum') +
+    edgecov(inc_net,'ecotype', form = 'sum') + edgecov(inc_net,'ecoprocess', form = 'sum') + edgecov(inc_net,'prov_service', form = 'sum') + edgecov(inc_net,'reg_service', form = 'sum') + edgecov(inc_net,'cult_service', form = 'sum') + edgecov(inc_net,'hwb', form = 'sum') +
 	#edgecov(inc_net, 'space_scale')+ edgecov(inc_net,'time_scale') +
-	nodefactor('space_range') + nodefactor('time_range') +
-	nodematch('space_range', diff = FALSE)+
-	nodematch('time_range', diff = FALSE) +
-	edgecov(inc_net,'reversibility') + edgecov(inc_net,'evidence'),
+	nodefactor('space_range', form = 'sum') + nodefactor('time_range', form = 'sum') +
+	nodematch('space_range', diff = FALSE, form = 'sum')+
+	nodematch('time_range', diff = FALSE, form = 'sum') +
+	edgecov(inc_net,'reversibility', form = 'sum') + edgecov(inc_net,'evidence', form = 'sum'),
     response ='inc', reference = ~Poisson,
     control = control.ergm(MCMLE.trustregion=1000)))
 
-summary(fit3); summary(fit.null3); summary(fit.w3)
+### check the mixingmatrix(inc_net, "time_range")
+fit.w3b <- suppressMessages(
+    ergm(inc_net ~ nonzero + sum + edgecov(inc_net,'landuse', form = 'sum') +
+             edgecov(inc_net,'ecotype', form = 'sum') + edgecov(inc_net,'ecoprocess', form = 'sum') + 
+             #edgecov(inc_net,'prov_service', form = 'sum') + edgecov(inc_net,'reg_service', form = 'sum') + edgecov(inc_net,'cult_service', form = 'sum') + edgecov(inc_net,'hwb', form = 'sum') +
+             #edgecov(inc_net, 'space_scale')+ edgecov(inc_net,'time_scale') +
+             #nodefactor('space_range', form = 'sum') + nodefactor('time_range', form = 'sum') +
+             #nodematch('space_range', diff = FALSE, form = 'sum')+
+             #nodematch('time_range', diff = FALSE, form = 'sum') +
+             nodemix("space_range", form = "sum") + 
+             nodemix("time_range", form = "sum", base = 0 ) + 
+             # the base argument is to avoid calculating week to week since it's a zero on the mixing matrix, to figure out which combination you need to delete see inc_net %v% "time_range" %>% unique()
+              edgecov(inc_net,'reversibility', form = 'sum') + edgecov(inc_net,'evidence', form = 'sum'),
+         response ='inc', reference = ~Poisson,
+         control = control.ergm(MCMLE.trustregion=1000)))
+
+summary(fit3); summary(fit.null3); summary(fit.w3); summary(fit.w3a); summary(fit.w3b)
+
+### J180911: none of the models with nodemix can be fitted. The fact that there is zero values on the 
+## mixingmatrix implies that the term will have NA std errors and p-values. If I set the base argument to the
+## pairing to be excluded (e.g. nodemix ('time_range', form = "sum", base = c(6))) where 6 is the pairing coefficient
+## to be excluded) then all other coefficients end up with NA std errors and p-values. Nodemix would have been
+## the perfect term to test cross-scale interactions, but doesn't work. For now, we can leave the paper as it is
+## given that the other terms offer a way around that is calculable.
 
 # ### tables are working so save the work space_scale
 # setwd("~/Documents/Projects/Cascading Effects")
