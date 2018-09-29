@@ -85,7 +85,7 @@ rs.net <- function (dat, i){
 		rs.x %e% 'fb' <- as.sociomatrix(rs.x) * fb.sum$cycle.comemb
 		#J161106: Note that cycle.comemb is a matrix with comemberships, so two nodes that are not connected in the network can belong to the same cycles. That's why I multiply by the adjacency matrix, to isolate only the edges. cycle.comemb can be used later for discovery of inconvenient feedbacks.
 	## add vertex attributes
-		rs.x %v% 'col' <- ifelse(colSums(fb.sum$cycle.count)[-1] == 0, "#FFD92F","#8DA0CB")
+		rs.x %v% 'col' <- ifelse(colSums(fb.sum$cycle.count)[-1] == 0, "#E41A1C", "#8DA0CB")
 		rs.x %n% 'name' <- levels(dat$Regime.Shift)[i]
 	return(rs.x)
 }

@@ -468,7 +468,7 @@ m1 <- ggplot(
                head = as.factor(head) %>% forcats::fct_rev()),
     aes(tail, head)) +
     geom_tile(aes(fill = paths)) +
-    ylab("") + xlab("") + ggtitle("Drivers sharing") +
+    labs(x = '', y = '', tag = 'A')+ ggtitle("Driver sharing") +
     scale_fill_gradient(low = "gray84" ,high = "#0000FF80", na.value = "grey50",
                          guide = guide_colorbar("shared drivers", barheight = 0.7)) +
     theme_light (base_size = 6) +
@@ -481,7 +481,7 @@ m2 <- ggplot(
          mutate(Tail = as.factor(Tail) %>% forcats::fct_rev(),
                Head = as.factor(Head)), #%>% forcats::fct_rev()),
     aes( Head, Tail)) +
-    geom_tile(aes(fill = weight)) + ggtitle("Domino effects") +
+    geom_tile(aes(fill = weight)) + ggtitle("Domino effects") + labs(tag = "B")+
     ylab("Independent regime shift") + xlab("Dependent regime shift") +
     scale_fill_gradient(high = "red", low = "gray84", na.value = "grey50",
                          guide = guide_colorbar("domino effects", barheight = 0.7))  +
@@ -563,7 +563,7 @@ m3 <- ggplot(
                Head = as.factor(Head)), #%>% forcats::fct_rev()),
     aes( Head, Tail)) +
     geom_tile(aes(fill = log(inc)))  + ggtitle("Hidden feedbacks") +
-    ylab("") + xlab("") +
+    labs(x='',y='', tag = 'C')+
     scale_fill_gradient(low = "#FFA50080", high = "#0000FF80", na.value = "grey50",
                         guide = guide_colorbar("hidden feedbacks [log]", barheight = 0.7)) +
     theme_minimal(base_size = 6) +
@@ -1256,3 +1256,161 @@ layout <- matrix(c(1,2), ncol = 1, nrow = 2)
 multiplot(plotlist = gg, layout = layout)
 
 quartz.save("Cascading_Fig3.pdf", type = "pdf", width = 4.75, height = 6, pointsize = 8)
+
+
+
+#### SM matrices figures
+
+m4 <- df_all %>% ungroup() %>%
+    mutate(tail = as.factor(tail) %>% forcats::fct_rev(),
+               head = as.factor(head)) %>%
+    ggplot(aes(y = tail, x = head)) +
+    geom_tile(aes(fill= type), show.legend = TRUE) +
+    scale_fill_manual(
+        #type = "seq", palette = "RdYlBu", #direction = -1, na.value = "gray57",
+        values = rev(brewer.pal(11, "RdYlBu")[-c(9,10,11)]),
+        guide = guide_legend(title = "Cascading effects", barwidth = 0.3)) +
+    theme_light(base_size = 6) + xlab('') + ylab('') + labs(tag = "D", title = "Summary matrix") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5 ),
+          legend.position = c(-0.25 ,- 0.25),
+      legend.key.size = unit(0.15,"cm"))
+
+quartz(width = 7, height = 7, pointsize = 7)
+
+multiplot(plotlist = list(m1,m2,m3,m4), layout = matrix(1:4,2,2, byrow = T))
+
+quartz.save("Cascading_FigS3.pdf", width = 7, height = 7, pointsize = 7, type = "pdf")
+
+
+
+##### Fig S4 worked examples
+## Updated ploting function
+plotnet <- function(net, ...){
+	plot.network(net, #mode='circle',
+			vertex.col = alpha(net %v% 'col', 0.7),
+			label = network.vertex.names(net),
+			label.cex= 1, label.col = "grey24",
+			main = net %n% 'name', col.main = "grey11", cex.main = 1.25,
+			vertex.border = 0,
+			usecurve=T,
+			vertex.cex= 2, #2 + scale(net %v% 'fb'),
+			label.pos= 5,
+			edge.col= alpha(net %e% 'col' , 1),
+			edge.lwd =  0.05, #0.05 + net %e% 'fb',
+			edge.curve = 0.01,
+			displayisolates=T, pad = 0.5
+			)
+		}
+
+## filter the links you need to highlight
+out %>%
+    filter(Tail == "Coral transitions", Head == "Mangroves transitions")
+
+## extract the variables that you need from the feedback:
+fb <- kcycle.census(out_inc[[54]], mode = "digraph", maxlen = network.size(out_inc[[54]]), cycle.comembership = "bylength")
+
+fb2 <- fb$cycle.comemb["5",,] # the first dim is the cycle length
+fb_5 <- fb2[which(rowSums(fb2)>0), which(colSums(fb2)>0)]
+
+
+### J180927: Use as.matrix.network.edgelist(out_inc[[144]]) instead of as.edgelist() because the ordering is different -- in oder to get the right edges on the colors you want
+
+quartz(width = 7, height = 4, pointsize = 8)
+par(mfrow = c(2,3), mar = c(1,1,2,1))
+# layout(matrix(c(1,2,3,3,4,4), ncol = 3, nrow = 2, byrow = TRUE))
+# levels(dat$Regime.Shift)[c(6,15)]
+
+
+for (i in c(6,15) ){
+	net <- rs.net(dat = dat,  i = i)
+	plotnet(net)
+}
+
+# use key to check the combination of regime shifts you want instad of mix
+# mix <- net.merge(dat, 6,15)
+col <- rep("grey", 72) #comes from as.matrix.network.edgelist(out_inc[[144]])
+col[40] <- "orange"
+col_nodes <- rep("grey", network.size(out_inc[[144]]))
+col_nodes[which(network.vertex.names(out_inc[[144]]) %in% c("Corals", "Coastal erosion"))] <- "orange"
+
+
+plot.network(
+    out_inc[[144]],
+    vertex.col = col_nodes,
+    edge.col = col,
+    edge.lwd = 0.05,
+    usecurve = TRUE,
+    edge.curve = 0,
+    vertex.border = 0,
+    vertex.cex = 2,
+    label = ifelse(
+        network.vertex.names(out_inc[[144]]) %in% c("Corals", "Coastal erosion"),
+        network.vertex.names(out_inc[[144]])[network.vertex.names(out_inc[[144]])%in% c("Corals", "Coastal erosion")], "" ),
+    label.cex = 1,
+    label.pos= 5,
+    label.col = "black",
+    main = "Domino effect", col.main = "grey11", cex.main = 1.25
+    )
+
+### Domino example
+
+for (i in c(2,27) ){
+	net <- rs.net(dat = dat,  i = i)
+	plotnet(net)
+}
+
+## key vars colnames(fb_5)
+## key links: 7, 3, 4, 5, 6, 26 ## weird thing link 6 & 26 are the same!
+col <- rep("grey", 41) #comes from as.matrix.network.edgelist(out_inc[[54]])
+col[c(3:7)] <- "orange"
+col_nodes <- rep("grey", network.size(out_inc[[54]]))
+col_nodes[which(network.vertex.names(out_inc[[54]]) %in% colnames(fb_5))] <- "orange"
+
+plot.network(
+    out_inc[[54]],
+    vertex.col = col_nodes,
+    edge.col = col,
+    edge.lwd = 0.05,
+    usecurve = TRUE,
+    edge.curve = 0,
+    vertex.border = 0,
+    vertex.cex = 2,
+    label = ifelse(
+        network.vertex.names(out_inc[[54]]) %in% colnames(fb_5),
+        network.vertex.names(out_inc[[54]])[network.vertex.names(out_inc[[54]])%in% colnames(fb_5)], "" ),
+    label.cex = 1,
+    label.pos= 5,
+    label.col = "black",
+    main = "Hidden feedback", col.main = "grey11", cex.main = 1.25
+)
+
+quartz.save("Cascading_FigS4.pdf", width = 7, height = 4, pointsize = 7, type = "pdf")
+
+i = 123
+
+plot.network(
+    out_inc[[i]],
+    vertex.col = "grey",
+    edge.col = "grey",
+    edge.lwd = 0.05,
+    usecurve = TRUE,
+    edge.curve = 0,
+    vertex.border = 0,
+    vertex.cex = betweenness(out_inc[[i]]) %>% scales::rescale(., 1,3),#2,
+    label = network.vertex.names(out_inc[[i]]),
+    # label = ifelse(
+    #     network.vertex.names(out_inc[[54]]) %in% colnames(fb_5),
+    #     network.vertex.names(out_inc[[54]])[network.vertex.names(out_inc[[54]])%in% colnames(fb_5)], "" ),
+    label.cex = 1,
+    label.pos= 5,
+    label.col = "black",
+    main = out_inc[[i]] %n% "name", col.main = "grey11", cex.main = 1.25
+)
+
+out_dat[[i]] ## dataframe with inconveient Feedbacks
+intersect(
+    network.vertex.names(out_dom[[7]]),
+    network.vertex.names(out_dom[[10]])
+)
+
+### J180929: There is a way to recover the hidden feedbacks. When using kcycle.census with "bylength" options, one gets an array of the number of feedbacks per length. Each matrix has w_i,j,k weights where w is the number of feedbacks at lenght k. Note that the index is something like w_k,i,j if you check the names of the dimensions. The problem is that one needs to create all the absent nodes of R2 in R1, and all albsent nodes of R1 in R2. So the resulting array has exaclty the same dimessions. Another issue is one needs to guarantee that node order (idex in the matrix) are the same. Once these two conditions are gurantee, one can substract the resulting array Rmix - (R1 + R2). That should give the matrix (per feedback lenght) of new feedbacks created, weighted by the number of new feedbacks per layer / length. Adding that matrix as vertex / edge attribute would make it graphically recoverable.
