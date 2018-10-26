@@ -212,8 +212,8 @@ net.merge <- function(dat,i,j){
 
 		rs.mix <- network(
 			select(df, Tail, Head, Polarity, col) %>%
-			group_by(Tail, Head) %>%
-			unique() ,
+			unite(index_link, Tail, Head, remove = FALSE) %>%
+			unique() %>% select(-index_link),
                 directed = T, ignore.eval = F, matrix.type = 'edgelist')
     # Add cycles to nodes and edges
 		fb.sum <- kcycle.census(rs.mix, maxlen=network.size(rs.mix), mode='digraph', tabulate.by.vertex=T, cycle.comembership='sum')
@@ -253,14 +253,14 @@ key <- combn(seq(1, length(levels(dat$Regime.Shift))),2)
 out <- list()
 for (i in 1:dim(key)[2]){
     # drivers in regime shift i
-    x1 <- (out_dom[[key[1,i]]] %v% 'vertex.names') [out_dom[[key[1,i]]] %v% 'col' == "#FFD92F"]
+    x1 <- (out_dom[[key[1,i]]] %v% 'vertex.names') [out_dom[[key[1,i]]] %v% 'col' == "#E41A1C"]
     # feedback variables in regime shift j
-    y1 <- (out_dom[[key[2,i]]] %v% 'vertex.names') [out_dom[[key[2,i]]] %v% 'col' != "#FFD92F"]
+    y1 <- (out_dom[[key[2,i]]] %v% 'vertex.names') [out_dom[[key[2,i]]] %v% 'col' != "#E41A1C"]
 
     # drivers in regime shift j
-    x2 <- (out_dom[[key[2,i]]] %v% 'vertex.names') [out_dom[[key[2,i]]] %v% 'col' == "#FFD92F"]
+    x2 <- (out_dom[[key[2,i]]] %v% 'vertex.names') [out_dom[[key[2,i]]] %v% 'col' == "#E41A1C"]
     # feedback variables in regime shift i
-    y2 <- (out_dom[[key[1,i]]] %v% 'vertex.names') [out_dom[[key[1,i]]] %v% 'col' != "#FFD92F"]
+    y2 <- (out_dom[[key[1,i]]] %v% 'vertex.names') [out_dom[[key[1,i]]] %v% 'col' != "#E41A1C"]
 
     # resulting interactions
     df1 <- data.frame(Tail = out_dom[[key[2,i]]] %n% 'name',
@@ -463,7 +463,7 @@ net.fb <- function(net1, net2, net3){
 		tabulate.by.vertex=T, cycle.comembership='sum')
 
 	x3cycle <- kcycle.census(net3, maxlen=network.size(net3), mode='digraph',
-		tabulate.by.vertex=T, cycle.comembership='bylength') #cycle.comembership='sum'
+		tabulate.by.vertex=T, cycle.comembership='sum') #cycle.comembership='sum'
 
 	#create a matrix with results
 	feed.mat <- cbind(x1cycle$cycle.count[,1], x2cycle$cycle.count[,1],
@@ -476,6 +476,7 @@ net.fb <- function(net1, net2, net3){
 	feed.mat$feed.length <- rownames(feed.mat)
 	feed.mat$Inconvenient <- feed.mat$RS.mix - (feed.mat$RS1 + feed.mat$RS2)
     feed.mat$Expected <- (feed.mat$RS1 + feed.mat$RS2)
+	feed.mat$coupling <- net3 %n% "name"
 
 	# #put data on long format
 	# library(reshape2)
@@ -514,17 +515,36 @@ for (i in 1:dim(key)[2]){
 }
 
 ### When doing for all of them:
-inc <- sapply(out_dat, function(x) sum(x$Inconvenient, na.rm = T), simplify = T)
+# inc <- sapply(out_dat, function(x) sum(x$Inconvenient, na.rm = T), simplify = T)
+#
+# df_inc <- data.frame(inc = inc, Tail = levels(dat$Regime.Shift)[key[1,]], Head = levels(dat$Regime.Shift)[key[2,]])
 
-df_inc <- data.frame(inc = inc, Tail = levels(dat$Regime.Shift)[key[1,]], Head = levels(dat$Regime.Shift)[key[2,]])
+df_inc <- out_dat %>%
+	bind_rows() %>%
+	group_by(coupling) %>%
+	summarize(inc = sum(Inconvenient)) %>%
+	#arrange(desc(inc)) %>%
+	separate(., col = coupling, into = c("Tail", "Head"), sep = " - ")
+
+df_inc2 <- out_dat %>%
+	bind_rows() %>%
+	group_by(coupling) %>%
+	summarize(inc = sum(Inconvenient)) %>%
+	#arrange(desc(inc)) %>%
+	separate(., col = coupling, into = c( "Head", "Tail"), sep = " - ")
+
+df_inc3 <- bind_rows(df_inc, df_inc2)
+
+## J181001: this is to set zero the feedbacks that have dissapeared. See 181001_SolvingProblems for a longer explanation.
+df_inc3$inc[df_inc3$inc < 0] <- 0
 
 inc_net <- network(
-	df_inc %>% select(Tail, Head, inc) %>% filter(inc > 0),
+	df_inc3 %>% select(Tail, Head, inc) %>% filter(inc > 0),
     directed = F, ignore.eval = FALSE, matrix.type = 'edgelist')
 
 inc_net %v% 'degree' <- sna::degree(inc_net, gmode = 'graph')
 
-rsdb2 <- rsdb[-25,] # without sprawling cities since it's not in the network
+rsdb2 <- rsdb[-c(21,25),] # without sprawling cities since it's not in the network... with corrected analysis river chanel change is also gone.
 
 for (i in 2:14){
     inc_net %e% names(rsdb2)[i] <- cracking(i,rsdb) %>%
@@ -553,7 +573,7 @@ inc_net %v% "time_range" <- c(
 	"year_decade",
 	"decade_century",
 	"decade_century",
-	"month_year",
+	# "month_year",
 	"year_decade",
 	"month_year",
 	"year_decade",
@@ -585,7 +605,7 @@ inc_net %v% "space_range" <- c(
 	"sub-continental",
 	"local",
 	"sub-continental",
-	"local",
+	# "local",
 	"local",
 	"local",
 	"local",
@@ -679,4 +699,4 @@ summary(fit3); summary(fit.null3); summary(fit.w3); summary(fit.w3a); summary(fi
 
 # ### tables are working so save the work space_scale
 # setwd("~/Documents/Projects/Cascading Effects")
-# save.image("170525_ergm_data.RData", safe = T)
+# save.image("181001_ergm_data.RData", safe = T)

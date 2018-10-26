@@ -32,7 +32,7 @@ library(sandwich); library(lmtest)
 library(ergm.count)
 
 ### Read CLD data# load CLD
-dat <- read.csv2('~/Documents/JUAN/PhD-SRC/RS20+Analysis/RS_CLD_2016.csv')
+dat <- read.csv2('~/Documents/JUAN/PhD-SRC/RS20+Analysis/RS_CLD_2018.csv')
 dat <- dat[,-1]
 dat$col <- ifelse(dat$Polarity == -1, "#FC8D62","#1F78B4")
 
@@ -64,7 +64,7 @@ plotnet <- function(net, ...){
 rs.net <- function (dat, i){
 	# filter dataset
 	dat <- filter(dat, Regime.Shift == levels(dat$Regime.Shift)[i],
-	 Polarity == 1 | Polarity == -1)
+	 Polarity == 1 | Polarity == -1) %>% unique()
 	#dat <- droplevels(dat)
 	# This ordering step is necessary to make sure polarity and other attributes are assigned correctly
 	# dat <- dat[order(dat$Tail, partial = dat$Head, decreasing = F),]

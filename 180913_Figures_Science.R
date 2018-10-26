@@ -38,7 +38,7 @@ library(kableExtra)
 # this loads the data, it was cleaned and prepared with script 170329_read_data.R
 # and load the ergm models fitted with script 170329_ergms.R
 
-load('~/Documents/Projects/Cascading Effects/170525_ergm_data.RData')
+load('~/Documents/Projects/Cascading Effects/181001_ergm_data.RData')
 
 
 #### Figure 1. Scheme with minimal examples:
@@ -357,8 +357,8 @@ p9 <- ggplot(data = data_frame(x = 0, y= 0), aes(x,y)) + geom_blank() +
 plot_list <- list(p1,p2,p3, m1, p4,p5,p6,m2, p7,p8,p9,m3)
 pp <- ggmatrix(
     plot_list, ncol = 4, nrow = 3,
-    xAxisLabels = c("regime shift 1", "regime shift 2", "joint regime shifts", "response variable"),
-    yAxisLabels = c("drivers sharing", "domino effects", "hidden feedbacks"),
+    xAxisLabels = c("Regime shift 1", "Regime shift 2", "Joint regime shifts", "Response variable"),
+    yAxisLabels = c("Driver sharing", "Domino effects", "Hidden feedbacks"),
     byrow = TRUE, showAxisPlotLabels = FALSE #, switch = 'y'
 )
 
@@ -576,17 +576,23 @@ m3 <- ggplot(
                 theme_light(base_size = 6) ) , xmin = 0, xmax =15 , ymin = 0, ymax = 15)
 
 ## I need to make the matrix symmetric so it does count the degrees correctly.
-df_inc2 <- data.frame(inc = inc, Head = levels(dat$Regime.Shift)[key[1,]], Tail = levels(dat$Regime.Shift)[key[2,]])
+df_inc2 <- out_dat %>%
+	bind_rows() %>%
+	group_by(coupling) %>%
+	summarize(inc = sum(Inconvenient)) %>%
+	#arrange(desc(inc)) %>%
+	separate(., col = coupling, into = c( "Head", "Tail"), sep = " - ")
 
 df_inc3 <- bind_rows(df_inc, df_inc2)
 
 g5 <- ggplot(
-    data = df_inc3 %>%
+    data = df_inc %>%
+        left_join(df_rs_type, by = c("Tail" = "tail")) %>%
+        filter(inc > 0) %>%
         mutate(Tail = as.factor(Tail), Head = as.factor(Head)) %>%
-        left_join (df_rs_type, by = c("Tail" = "tail")) %>%
-        mutate(Tail = fct_reorder(Tail, inc, fun = mean, .desc = FALSE )) %>% filter(inc > 0)  ,
+        mutate(Tail = fct_reorder(Tail, inc, fun = mean, .desc = FALSE )) ,
     aes(Tail, inc, color = type, fill = type)) +
-    geom_boxplot( outlier.alpha = 0.5, alpha = 0.5,
+    geom_boxplot(outlier.alpha = 0.5, alpha = 0.5,
                  outlier.size = 0.8, show.legend = FALSE, size = 0.1) +
     # geom_point(
     #     data = df_inc3 %>%
@@ -1307,24 +1313,56 @@ out %>%
     filter(Tail == "Coral transitions", Head == "Mangroves transitions")
 
 ## extract the variables that you need from the feedback:
-fb <- kcycle.census(out_inc[[54]], mode = "digraph", maxlen = network.size(out_inc[[54]]), cycle.comembership = "bylength")
+fb <- kcycle.census(out_inc[[32]], mode = "digraph", maxlen = network.size(out_inc[[32]]), cycle.comembership = "bylength")
 
-fb2 <- fb$cycle.comemb["5",,] # the first dim is the cycle length
+fb2 <- fb$cycle.comemb["12",,] # the first dim is the cycle length
 fb_5 <- fb2[which(rowSums(fb2)>0), which(colSums(fb2)>0)]
 
 
-### J180927: Use as.matrix.network.edgelist(out_inc[[144]]) instead of as.edgelist() because the ordering is different -- in oder to get the right edges on the colors you want
+### J180927: Use as.matrix.network.edgelist(out_inc[[32]]) instead of as.edgelist() because the ordering is different -- in oder to get the right edges on the colors you want
 
-quartz(width = 7, height = 4, pointsize = 8)
-par(mfrow = c(2,3), mar = c(1,1,2,1))
+quartz(width = 7, height = 4, pointsize = 7)
+par(mfrow = c(2,3), mar = c(.5,.5,2,.5))
 # layout(matrix(c(1,2,3,3,4,4), ncol = 3, nrow = 2, byrow = TRUE))
 # levels(dat$Regime.Shift)[c(6,15)]
 
+#
+# for (i in c(6,15) ){
+# 	net <- rs.net(dat = dat,  i = i)
+# 	plotnet(net)
+# }
+plot.network(out_dom[[6]],
+        vertex.col = alpha(out_dom[[6]] %v% 'col', 0.7),
+        label = network.vertex.names(out_dom[[6]]),
+        label.cex= 1, label.col = "grey24",
+        main = out_dom[[6]] %n% 'name', col.main = "grey11", cex.main = 1.25,
+        vertex.border = 0,
+        usecurve=T,
+        vertex.cex= 2, #2 + scale(net %v% 'fb'),
+        label.pos= 5,
+        edge.col= alpha(out_dom[[6]] %e% 'col' , 1),
+        edge.lwd =  0.05, #0.05 + net %e% 'fb',
+        edge.curve = 0.01,
+        displayisolates=T, pad = 0.5
+        # , interactive = TRUE
+        )
+title("A", adj = 0)
 
-for (i in c(6,15) ){
-	net <- rs.net(dat = dat,  i = i)
-	plotnet(net)
-}
+plot.network(out_dom[[15]],
+        vertex.col = alpha(out_dom[[15]] %v% 'col', 0.7),
+        label = network.vertex.names(out_dom[[15]]),
+        label.cex= 1, label.col = "grey24",
+        main = out_dom[[15]] %n% 'name', col.main = "grey11", cex.main = 1.25,
+        vertex.border = 0,
+        usecurve=T,
+        vertex.cex= 2, #2 + scale(net %v% 'fb'),
+        label.pos= 5,
+        edge.col= alpha(out_dom[[15]] %e% 'col' , 1),
+        edge.lwd =  0.05, #0.05 + net %e% 'fb',
+        edge.curve = 0.01,
+        displayisolates=T, pad = 0.5
+        # ,interactive = TRUE
+        )
 
 # use key to check the combination of regime shifts you want instad of mix
 # mix <- net.merge(dat, 6,15)
@@ -1332,7 +1370,8 @@ col <- rep("grey", 72) #comes from as.matrix.network.edgelist(out_inc[[144]])
 col[40] <- "orange"
 col_nodes <- rep("grey", network.size(out_inc[[144]]))
 col_nodes[which(network.vertex.names(out_inc[[144]]) %in% c("Corals", "Coastal erosion"))] <- "orange"
-
+names_corrected <- network.vertex.names(out_inc[[144]])
+names_corrected[!names_corrected %in% c( "Coastal erosion", "Corals")] <- ""
 
 plot.network(
     out_inc[[144]],
@@ -1343,31 +1382,65 @@ plot.network(
     edge.curve = 0,
     vertex.border = 0,
     vertex.cex = 2,
-    label = ifelse(
-        network.vertex.names(out_inc[[144]]) %in% c("Corals", "Coastal erosion"),
-        network.vertex.names(out_inc[[144]])[network.vertex.names(out_inc[[144]])%in% c("Corals", "Coastal erosion")], "" ),
+    label = names_corrected,
     label.cex = 1,
     label.pos= 5,
     label.col = "black",
     main = "Domino effect", col.main = "grey11", cex.main = 1.25
     )
 
-### Domino example
+### Hidden feedback example
 
-for (i in c(2,27) ){
-	net <- rs.net(dat = dat,  i = i)
-	plotnet(net)
-}
+# for (i in c(2,5) ){
+# 	net <- rs.net(dat = dat,  i = i)
+# 	plotnet(net)
+# }
+plot.network(out_dom[[2]],
+        vertex.col = alpha(out_dom[[2]] %v% 'col', 0.7),
+        label = network.vertex.names(out_dom[[2]]),
+        label.cex= 1, label.col = "grey24",
+        main = out_dom[[2]] %n% 'name', col.main = "grey11", cex.main = 1.25,
+        vertex.border = 0,
+        usecurve=T,
+        vertex.cex= 2, #2 + scale(net %v% 'fb'),
+        label.pos= 5,
+        edge.col= alpha(out_dom[[2]] %e% 'col' , 1),
+        edge.lwd =  0.05, #0.05 + net %e% 'fb',
+        edge.curve = 0.01,
+        displayisolates=T, pad = 0.5
+        # , interactive = TRUE
+        )
+title("B", adj = 0)
 
+plot.network(out_dom[[5]],
+        vertex.col = alpha(out_dom[[5]] %v% 'col', 0.7),
+        label = network.vertex.names(out_dom[[5]]),
+        label.cex= 1, label.col = "grey24",
+        main = out_dom[[5]] %n% 'name', col.main = "grey11", cex.main = 1.25,
+        vertex.border = 0,
+        usecurve=T,
+        vertex.cex= 2, #2 + scale(net %v% 'fb'),
+        label.pos= 5,
+        edge.col= alpha(out_dom[[5]] %e% 'col' , 1),
+        edge.lwd =  0.05, #0.05 + net %e% 'fb',
+        edge.curve = 0.01,
+        displayisolates=T, pad = 0.5
+        # ,interactive = TRUE
+        )
 ## key vars colnames(fb_5)
 ## key links: 7, 3, 4, 5, 6, 26 ## weird thing link 6 & 26 are the same!
-col <- rep("grey", 41) #comes from as.matrix.network.edgelist(out_inc[[54]])
-col[c(3:7)] <- "orange"
-col_nodes <- rep("grey", network.size(out_inc[[54]]))
-col_nodes[which(network.vertex.names(out_inc[[54]]) %in% colnames(fb_5))] <- "orange"
+i = 32
+
+col <- rep("grey", 47)
+#check as.matrix.network.edgelist(out_inc[[i]])
+col[c(6,7,21,36,37,39,47,32,24,26,27,31)] <- "orange"
+col_nodes <- rep("grey", network.size(out_inc[[i]]))
+col_nodes[which(network.vertex.names(out_inc[[i]]) %in% colnames(fb_5))] <- "orange"
+label <- rep("", network.size(out_inc[[i]]))
+label[which(network.vertex.names(out_inc[[i]]) %in% colnames(fb_5))] <- colnames(fb_5)
 
 plot.network(
-    out_inc[[54]],
+    out_inc[[i]],
     vertex.col = col_nodes,
     edge.col = col,
     edge.lwd = 0.05,
@@ -1375,9 +1448,7 @@ plot.network(
     edge.curve = 0,
     vertex.border = 0,
     vertex.cex = 2,
-    label = ifelse(
-        network.vertex.names(out_inc[[54]]) %in% colnames(fb_5),
-        network.vertex.names(out_inc[[54]])[network.vertex.names(out_inc[[54]])%in% colnames(fb_5)], "" ),
+    label = label,
     label.cex = 1,
     label.pos= 5,
     label.col = "black",
@@ -1386,17 +1457,33 @@ plot.network(
 
 quartz.save("Cascading_FigS4.pdf", width = 7, height = 4, pointsize = 7, type = "pdf")
 
-i = 123
 
+
+
+##### The test below is to identify inconsistencies in naming and strange feedbacks.
+# i takes the index of the coupling from 'key'. The couplings on the index comes from dat$Regime.Shift %>% levels()
+quartz(width = 7, height = 3, pointsize = 7)
+par(mfrow = c(1,3), mar = c(1,1,2,1))
+
+
+j = 10
+k = 15
+
+for (i in c(j,k) ){
+	net <- rs.net(dat = dat,  i = i)
+	plotnet(net)
+}
+
+i = 230
 plot.network(
     out_inc[[i]],
     vertex.col = "grey",
     edge.col = "grey",
     edge.lwd = 0.05,
     usecurve = TRUE,
-    edge.curve = 0,
+    edge.curve = 0.01,
     vertex.border = 0,
-    vertex.cex = betweenness(out_inc[[i]]) %>% scales::rescale(., 1,3),#2,
+    vertex.cex = 1, #betweenness(out_inc[[i]]) %>% scales::rescale(., 1,3),#2,
     label = network.vertex.names(out_inc[[i]]),
     # label = ifelse(
     #     network.vertex.names(out_inc[[54]]) %in% colnames(fb_5),
@@ -1404,13 +1491,100 @@ plot.network(
     label.cex = 1,
     label.pos= 5,
     label.col = "black",
-    main = out_inc[[i]] %n% "name", col.main = "grey11", cex.main = 1.25
+    main = out_inc[[i]] %n% "name", col.main = "grey11", cex.main = 1.25,
+    interactive = T
 )
 
 out_dat[[i]] ## dataframe with inconveient Feedbacks
 intersect(
-    network.vertex.names(out_dom[[7]]),
-    network.vertex.names(out_dom[[10]])
+    network.vertex.names(out_dom[[j]]),
+    network.vertex.names(out_dom[[k]])
 )
 
 ### J180929: There is a way to recover the hidden feedbacks. When using kcycle.census with "bylength" options, one gets an array of the number of feedbacks per length. Each matrix has w_i,j,k weights where w is the number of feedbacks at lenght k. Note that the index is something like w_k,i,j if you check the names of the dimensions. The problem is that one needs to create all the absent nodes of R2 in R1, and all albsent nodes of R1 in R2. So the resulting array has exaclty the same dimessions. Another issue is one needs to guarantee that node order (idex in the matrix) are the same. Once these two conditions are gurantee, one can substract the resulting array Rmix - (R1 + R2). That should give the matrix (per feedback lenght) of new feedbacks created, weighted by the number of new feedbacks per layer / length. Adding that matrix as vertex / edge attribute would make it graphically recoverable.
+
+
+## extract the variables that you need from the feedback:
+fb <- kcycle.census(
+    out_inc[[i]], mode = "digraph",
+    maxlen = network.size(out_inc[[i]]),
+    cycle.comembership = "bylength",
+    tabulate.by.vertex = TRUE
+)
+
+fb2 <- fb$cycle.comemb["5",,] # the first dim is the cycle length
+# fbi <- fb2[which(rowSums(fb2)>0), which(colSums(fb2)>0)]
+
+## same for j RS
+fb3 <- kcycle.census(
+    out_dom[[j]], mode = "digraph", maxlen = network.size(out_dom[[j]]), cycle.comembership = "bylength",
+    tabulate.by.vertex = TRUE
+)
+
+fb4 <- kcycle.census(
+    out_dom[[k]], mode = "digraph", maxlen = network.size(out_dom[[k]]), cycle.comembership = "bylength",
+    tabulate.by.vertex = TRUE
+)
+
+fb3cc <- fb3$cycle.comemb["5",,]
+fb4cc <- fb4$cycle.comemb["5",,]
+
+
+net <- network(
+    # fb2 * as.sociomatrix(out_inc[[i]]) ,
+     fb3cc * as.sociomatrix(out_dom[[j]]),
+    # fb4cc * as.sociomatrix(out_dom[[k]]) ,
+    directed = T)
+
+plot.network(
+    net,
+    vertex.col = "grey",
+    edge.col = "grey",
+    edge.lwd = 0.05,
+    usecurve = TRUE,
+    edge.curve = 0.01,
+    vertex.border = 0,
+    vertex.cex = 2,
+    label = network.vertex.names(net),
+    label.cex = 1,
+    label.pos= 5,
+    label.col = "black",
+    displayisolates = FALSE
+)
+
+
+## another way to find duplication errors
+as.matrix.network.edgelist(out_dom[[j]]) %>%
+    as_tibble() %>%
+    group_by(V1, V2) %>%
+    mutate(N = n()) %>%
+    arrange(desc(N))
+
+
+#### Figure for Reversibility
+
+f1 <- ggplot(data =
+    rsdb %>%
+    mutate(evidence = as.factor(evidence)) %>%
+    mutate(N = n()) %>%
+    mutate(evidence = fct_reorder(evidence, N, sum))
+) +
+    geom_bar(aes(evidence)) +
+    coord_flip() +
+    theme_light(base_size = 6) + labs(tag="A") + xlab("Evidence types") + ylab("Number of regime shifts")
+
+f2 <- ggplot(data = rsdb %>%
+    mutate(reversibility = as.factor(reversibility)) %>%
+    mutate(N = n()) %>%
+    mutate(reversibility = fct_reorder(reversibility, N, sum))
+) +
+    geom_bar(aes(reversibility)) +
+    coord_flip() +
+    theme_light(base_size = 6) + labs(tag="B") + xlab("Reversibility") + ylab("Number of regime shifts")
+
+quartz(width = 7, height = 2, pointsize = 7)
+gg <- list(f1,f2)
+layout <- matrix(c(1,2), ncol = 2, nrow = 1)
+multiplot(plotlist = gg, layout = layout)
+
+quartz.save("Cascading_FigS5.pdf", type = "pdf", width = 7, height = 2, pointsize = 7)
