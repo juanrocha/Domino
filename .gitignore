@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 .Rapp.history
+.Rprofile.R
 *.html
 *.docx
 *.pdf
@@ -11,4 +12,3 @@
 *.cls
 *.csl
 *.png
-**
