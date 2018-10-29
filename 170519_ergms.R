@@ -2,20 +2,18 @@
 ### Cascading effects paper
 ### by Juan Rocha
 ### juan.rocha@su.se
-# rm(list = ls())
+
 
 ### The code version from 1704__ includes code chunks for previous visualization and extensive comments. Here I only keep what has been useful and restrict comments to the minimum.
-
 source('~/Documents/Projects/Cascading Effects/Domino/170329_read_data.R')
 
 
-##### ERGMS for Bipartite network: Fork connections
-
+##### ERGMS for Bipartite network: Sharing drivers
 ## Setting the bipartite network
 nets <- list()
 bip.edgelist <- list()
 
-for (i in 1:length(levels(dat$Regime.Shift)) ){ #length(levels(dat$Regime.Shift))
+for (i in 1:length(levels(dat$Regime.Shift)) ){ 
 	net <- rs.net(dat = dat,  i = i)
 	fb <- kcycle.census(net, maxlen = network.size(net), mode = 'digraph', tabulate.by.vertex=T, cycle.comembership = 'sum' )
 	driv <- names(colSums(fb$cycle.count)[colSums(fb$cycle.count) == 0])
@@ -30,14 +28,15 @@ bipmat <- as.matrix(table(bip.edgelist))
 
 # create bipartite network
 bip1 <- network(bipmat, bipartite = T)
-degbip <- sna::degree(bip1, gmode="graph")
 
-bip_attr <- read.csv2('~/Documents/Projects/Cascading Effects/bip_attributes.csv')
-
-colors <- c( "#0000EE" ,"#FFB90F", "#EE3B3B", "#8A2BE2", "#FF7F00", "#9ACD32")
-
-bip1 %v% 'attr' <- as.vector(bip_attr$attribute)
-bip1 %v% 'col' <- colors[factor(bip_attr$attribute)]
+# degbip <- sna::degree(bip1, gmode="graph")
+# 
+# bip_attr <- read.csv2('~/Documents/Projects/Cascading Effects/bip_attributes.csv')
+# 
+# colors <- c( "#0000EE" ,"#FFB90F", "#EE3B3B", "#8A2BE2", "#FF7F00", "#9ACD32")
+# 
+# bip1 %v% 'attr' <- as.vector(bip_attr$attribute)
+# bip1 %v% 'col' <- colors[factor(bip_attr$attribute)]
 
 
 
@@ -82,7 +81,19 @@ mode.1<- function (net){
 	return(list(net1, net2))
 }
 
-x <- mode.1(bip1)[[2]] # x is the regime shifts one-mode network
+## Test: x is the regime shifts one-mode network
+x <- mode.1(bip1)[[2]] 
+
+### A function to clean and order matrices:
+clean.and.order <- function(x){
+    colnames(x)<-gsub("([.])", "\\ ", colnames(x))
+    rownames(x)<-gsub("([.])", "\\ ", rownames(x))
+    ordcol <- order (colnames(x), decreasing=F)
+    ordrow <- order (rownames(x), decreasing=F)
+    x2 <- x[ordrow,ordcol]
+    x2 <- as.matrix(x2)
+    return(x2)
+}
 
 ## This loop adds the edge attributes using the RSDB + Jaccard distance
 for (i in 2:14){
@@ -180,7 +191,8 @@ x %e% "impacts" <- m
 
 fit1 <- lm(paths ~ landuse + ecotype + ecoprocess + prov_service + reg_service + cult_service + hwb + space_scale + time_scale + reversibility + evidence, data = df_test)
 
-### ERGMS for Regime Shifts
+###########################################
+### ERGMS for Regime Shifts sharing drivers
 # library(ergm.count)
 
 fit.null1 <- suppressMessages(ergm(x ~ nonzero + sum , response ='paths', reference=~Poisson, control = control.ergm(MCMLE.trustregion=1000))) ## AIC: -1258
@@ -200,8 +212,8 @@ summary(fit1); summary(fit.null1); summary(fit.w1); summary(fit.w1a)
 # corrgram(df_test[-6], type = 'data', order= T,  lower.panel = 'panel.pts', upper.panel = 'panel.cor', diag.panel = 'panel.density')
 
 ####### Ergms for domino effects
-
-## Domino effects will be studied with Arctic regime shifts. This is: if a driver in one regime shift is part of a feedback in another.
+## Domino effects will be studied if a driver in one regime shift is part of a feedback in another.
+## A function to merge causal diagrams
 net.merge <- function(dat,i,j){
     # create network. Attributes are already declared when using ignore.evale = F
     df <- rbind(
@@ -226,18 +238,6 @@ net.merge <- function(dat,i,j){
         rs.mix %v% 'col' <- ifelse(colSums(fb.sum$cycle.count)[-1] == 0, "#E41A1C", "#8DA0CB")
 	return(rs.mix)
 }
-
-# subset the dominoes dataset
-# dom <- filter(dat, Regime.Shift == 'Arctic Sea Ice collapse'|
-#                 Regime.Shift == 'Fisheries collapse' |
-#                 Regime.Shift == 'Greenland Ice Sheet collapse'|
-#                 Regime.Shift == 'Marine foodwebs'|
-#                 Regime.Shift == 'Thermohaline circulation' |
-#                 Regime.Shift == 'Tundra to forest'|
-#                 Regime.Shift == 'Steppe to Tundra' |
-#                 Regime.Shift == 'Peatland transitions'
-#                 )
-# dom <- droplevels(dom)
 
 # list for network outcomes
 out_dom <- list()
@@ -277,24 +277,23 @@ for (i in 1:dim(key)[2]){
 }
 
 out <- bind_rows(out)
-# domino <- select(out, Tail, Head, weight = weight1dir)
-# domino <- rbind(domino, select(out, Tail = Head, Head = Tail, weight = weigth2dir))
 
+## A network of domino effects
 dom_net <- network(filter(out, weight > 0),
     directed = T, ignore.eval = FALSE, matrix.type = 'edgelist')
-
 dom_net %v% 'indegree' <- sna::degree(dom_net, cmode = 'indegree')
 dom_net %v% 'outdegree' <- sna::degree(dom_net, cmode = 'outdegree')
 
 
-
-
+####################################
 #### Run ergms to explain the matrix
+####################################
 
 for (i in 2:14){
     dom_net %e% names(rsdb)[i] <- cracking(i,rsdb) %>%
     table() %>% as.matrix() %>% dist( method="binary", upper=T, diag=T) %>% as.matrix() %>% clean.and.order()
 }
+
 ## add categorical version of scale:
 dom_net %v% "time_range" <- c(
 	"year_decade",
@@ -383,7 +382,7 @@ dom_net %e% "impacts" <- m
 
 fit2 <- lm(paths ~ landuse + ecotype + ecoprocess + prov_service + reg_service + cult_service + hwb + space_scale + time_scale + reversibility + evidence, data = df_test2)
 
-### ERGMS for Regime Shifts
+### ERGMS for Regime Shifts domino effects:
 # library(ergm.count)
 
 fit.null2 <- suppressMessages(
@@ -428,7 +427,7 @@ fit.w2b <- suppressMessages(
 ### J180910: I'm trying to fit a model with nodemix, which is the term that would allow us to see more clearly
 ## cross-scale interactions: whether a link is more likely between nodes with different types of scale attributes.
 ## The mixingmatrix(dom_net, "time_range") reveals there is zeroes, and I get errors of singular matrices.
-## But I do get the model fit without extra terms (sometimes). In any case I don't trust it - so let's keep the
+## But I do get the model fit without extra terms (sometimes). In any case I don't trust it (it degenerates) - so I will keep the
 ## original specification on the paper.
 
 fit.w2c <- suppressMessages(
@@ -447,7 +446,8 @@ fit.w2c <- suppressMessages(
 
 summary(fit2); summary(fit.null2); summary(fit.w2); summary(fit.w2a); summary(fit.w2b); summary(fit.w2c)
 
-##### Ergms for inconvenient feedbacks
+#################################
+##### Ergms for hidden feedbacks
 
 # A function to merge networks based on edge lists aggregation
 # The function below is useful when cycles numbers are not calculated. Currently I'm using cycle.comemebership='sum' which gives me the link weigth. As alternative, cycle.comembership='byblength' retunrs an array where each matrix shows cycle co-membership by length.
@@ -478,27 +478,10 @@ net.fb <- function(net1, net2, net3){
     feed.mat$Expected <- (feed.mat$RS1 + feed.mat$RS2)
 	feed.mat$coupling <- net3 %n% "name"
 
-	# #put data on long format
-	# library(reshape2)
-	# x.long <- melt(feed.mat, id.var="feed.length",
-	#  		 measure.var= colnames(feed.mat)[c(1:3,5,6)],
-	#  		 value.name='value')
-    #
-	#  x.long$value <- as.integer(x.long$value)
-	#  x.long$feed.length <- as.integer(x.long$feed.length)
-    #
-# 	# plot it
-# 	library(ggplot2)
-# 	g <- ggplot(filter(x.long, variable == 'Expected' | variable == 'Inconvenient' ), aes(x=feed.length, y=value), group=variable)
-# 	g <- g + geom_bar(aes(fill=variable), position = 'stack', stat = 'identity')  +
-# 		ylab('Number of feedbacks') + xlab('Feedback length') +
-# 	 	ggtitle(net3 %n% 'name') + theme_bw(base_size = 7) +
-# 	 	theme(legend.position=c(0.8,0.7), plot.title=element_text(size=rel(0.85))) + scale_fill_manual("Feedbacks",values=c("#377EB8CC", "#E41A1CCC")) + xlim(0, max(x.long[x.long$value > 0, ]$feed.length))
-# # colors not used "#984EA3", "#4DAF4A"
 	return(list(feed.mat)) #
 }
 
-## automatize from here!
+
 # list of results
 out_inc <- list() # output for merged networks of inconvenient feedbacks
 
@@ -507,17 +490,11 @@ for (i in 1:dim(key)[2]){
 }
 
 out_dat <- list()
-# out_graph <- list() # output for graphics
+
 for (i in 1:dim(key)[2]){
     x3 <- net.fb(rs.net(dat, key[1,i]), rs.net(dat, key[2,i]), out_inc[[i]])
     out_dat[[i]] <- x3[[1]]
-    # out_graph[[i]] <- x[[2]]
 }
-
-### When doing for all of them:
-# inc <- sapply(out_dat, function(x) sum(x$Inconvenient, na.rm = T), simplify = T)
-#
-# df_inc <- data.frame(inc = inc, Tail = levels(dat$Regime.Shift)[key[1,]], Head = levels(dat$Regime.Shift)[key[2,]])
 
 df_inc <- out_dat %>%
 	bind_rows() %>%
@@ -640,14 +617,9 @@ m <- cracking(7,rsdb2) %>%
 df_test3$impacts <- 1 - m[upper.tri(m)]
 inc_net %e% "impacts" <- m
 
-## transform the response var to log space to see if it improves regressions
-
-# df_test3$log_path <- log(1 + df_test3$paths)
-# inc_net %e% "log_inc" <- log(1 + inc_net %e% 'inc')
-
 fit3 <- lm(paths ~ landuse + ecotype + ecoprocess + prov_service + reg_service + cult_service + hwb + space_scale + time_scale + reversibility + evidence, data = df_test3)
 
-### ERGMS for Regime Shifts
+### ERGMS for Regime Shifts hidden feedbacks
 # library(ergm.count)
 
 fit.null3 <- suppressMessages(

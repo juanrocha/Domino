@@ -5,12 +5,11 @@
 
 
 # ## clean and load packages
-rm(list = ls())
 set.seed(12345)
 library (dplyr)
 library (tidyr)
 library (network)
-library (sna) # load the package
+library (sna) 
 library(RColorBrewer)
 library(ggplot2)
 library(GGally)
@@ -32,7 +31,7 @@ library(sandwich); library(lmtest)
 library(ergm.count)
 
 ### Read CLD data# load CLD
-dat <- read.csv2('~/Documents/JUAN/PhD-SRC/RS20+Analysis/RS_CLD_2018.csv')
+dat <- read.csv2('~/Documents/Projects/Cascading Effects/files_figshare/RS_CLD_2018.csv')
 dat <- dat[,-1]
 dat$col <- ifelse(dat$Polarity == -1, "#FC8D62","#1F78B4")
 
@@ -90,15 +89,14 @@ rs.net <- function (dat, i){
 	return(rs.x)
 }
 
-source('~/Dropbox/Code/JuanFunctions.R')
+### Read RSDB data: We used version of the RSDB from late 2016 / early 2017. For a more recent version of the database visit http://www.regimeshifts.org/datasets-resources
 
-
-### Read RSDB data
-
-rsdb <- read.csv(file = "~/Documents/Projects/Cascading Effects/161025_RegimeShiftsDatabase.CSV",
+rsdb <- read.csv(file = "~/Documents/Projects/Cascading Effects/files_figshare/161025_RegimeShiftsDatabase.CSV",
                   header = TRUE, sep = ",", stringsAsFactors = F)
 
-cases <- read.csv(file = '~/Downloads/Regime Shifts Database Case Studies_170120.CSV', header = T, sep = ',' )
+cases <- read.csv(
+    file = '~/Documents/Projects/Cascading Effects/files_figshare/Regime_Shifts_Database_Case Studies_170120.CSV', 
+    header = T, sep = ',' )
 
 rsdb <- rsdb [-2,] # delete for know Invasive floating plants... seems to be duplicated.
 rs <- as.character(rsdb[,3])
@@ -126,28 +124,6 @@ cracking <- function(z, data){
     # y$value <- 1 # add this if you need to manipulate with tidyr
 return (y) #return is a long form dataframe that can be used with ggplot2
 }
-
-# If you want to see the table
-# drivers <- as.data.frame(table(cracking(z=7, data=data)))
-# df <- as.data.frame(table(cracking (z=22, data = rsdb)))
-# df <- df %>% filter (Freq > 0) %>%
-#     select (V1, V2)
-#
-# ## Correct incosistent naming on the RSDB. Note it's not the regime shift name (column 3), but how they are referred to in column 22
-# # The problematic names:
-# # setdiff(levels(df$V2), levels(df$V1))
-# levels(df$V2) [14] <- levels(df$V1) [10]
-# levels(df$V2) [15] <- levels(df$V1) [6]
-# levels(df$V2) [18] <- levels(df$V1) [6]
-# levels(df$V2) [17] <- levels(df$V1) [10]
-# levels(df$V2) [17] <- levels(df$V1) [7]
-# levels(df$V2) [19] <- levels(df$V1) [24]
-#
-# levels(df$V2) [17] <- levels(df$V2) [20] # I don't have Desertification nor Forest to Cropland published on website!!!
-#
-#
-# cas.rs <- network( df, directed = TRUE)
-# network::delete.vertices(cas.rs, vid = 20)
 
 ## Clean the RSDB file to keep only important things:
 rsdb <- select(rsdb, name = Regime.Shift.Name,
@@ -191,7 +167,7 @@ rsdb[31,17] <- "Impoundments, Shrub encroachment, Monsoon circulation, Forest to
 rsdb$name[6] <- 'Marine foodwebs'
 rsdb$name[10] <- 'Marine eutrophication'
 rsdb$name[11] <- 'WAIS'
-rsdb$name[21] <- 'Bivalves collapse'
+rsdb$name[21] <- 'Bivalve collapse'
 rsdb$name[22] <- 'Bush encroachment'
 rsdb$name[5] <- "Coniferous to deciduous forest"
 rsdb$name[17] <- "Floating plants"
@@ -208,8 +184,7 @@ rsdb$name[18] <- "Tundra to forest"
 rsdb$name[15] <- "River channel change"
 rsdb$name[14] <- "Sprawling vs compact city"
 
-# rsdb$name
-# levels(dat$Regime.Shift)[!levels(dat$Regime.Shift) %in% rsdb$name]
+
 rsdb <- rsdb[order(rsdb$name), ]
 rsdb <- rsdb[-5, ]
 rsdb <- rsdb[, -17 ]
