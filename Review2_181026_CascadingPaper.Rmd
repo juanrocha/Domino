@@ -183,7 +183,7 @@ Three response variables matrices were created by merging pairs of regime shift 
 
 ```{r Fig1, cache = TRUE, echo = FALSE, error=FALSE, warning=FALSE, message=FALSE, fig.height = 3.75, fig.width = 4.75, fig.align = 'center', fig.cap = "Method scheme. Pairs of regime shift causal networks were merged to create a response variable matrix that accounted for drivers shared, domino effects, or hidden feedbacks. In all examples two minimal regime shifts are depicted as causal diagrams, drivers are colored red and variables belonging to feedbacks purple. For driver sharing, the joint network is simplified as a two-mode network which allows us to study the co-occurrence of drivers (in red) across regime shifts (in blue). Driver a is shared by regime shifts 1 and 2 but not driver b. The response variable matrix counts the number of drivers shared by all pairwise combinations of regime shifts. For domino effects, two regime shift networks are joined together where driver c in regime shift 2 is also part of a feedback process in regime shift 1, creating a one-way dependency (orange link) between the two regime shifts. The response variable matrix counts all the one-way causal pathways between pairwise combinations of regime shifts. For hidden feedbacks, two minimal regime shifts when joined together give rise to a new unidentified feedback (orange circular pathway). The response variable matrix counts all hidden feedbacks that arise when merging pairwise combinations of regime shifts. The 30 causal networks used and the labeled matrices of the resulting response variables are shown in Fig. S1 and S3.", dev = "pdf", dpi = 300, dev.args = list(pointsize = 6)}
 
-#knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_Fig1.pdf")
+knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_Fig1.pdf")
 
 ```
 
@@ -193,7 +193,7 @@ Regime shifts can be structurally interdependent (Fig. 2). The three response va
 
 ```{r Fig2, cache = TRUE, echo = FALSE, error=FALSE, warning=FALSE, message=FALSE, fig.height = 3, fig.width = 4.75, dev.args = list(pointsize= 6), fig.align='center', fig.cap = "Potential structural dependencies between regime shifts. The three response variables combined (A) shows eight different possibilities in which regime shifts can interact through cascading effects. Driver sharing is the most common type found (B). Domino effects and hidden feedbacks alone or in combination account for 45 per cent of all pairwise regime shift couplings analyzed (C) implying structural dependence", dev = "pdf", dpi = 300}
 
-#knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_FigSummary.pdf")
+knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_FigSummary.pdf")
 
 ```
 Driver sharing is the most common type of connection found (Fig. 2). Regime shifts can correlate in time and space due to common drivers, but they do not necessarily become interdependent[@Hughes:2013cv; @Rocha:2015du]; this is, the occurrence of one does not affect the probability of the second occurring. Of all pairwise regime shift combinations 36% were coupled only by driver sharing. The resulting matrix for driver sharing describes the co-occurrence patterns of `r dim(bipmat)[1]` drivers across the `r dim(bipmat)[2]` regime shifts analyzed. In our sample, aquatic regime shifts tend to have and share more drivers, although the driver sharing is not exclusively with other aquatic regime shifts (Fig. 3A, 4B). The highest driver co-occurrence was found between regime shifts in kelps, marine eutrophication, and the collapse of fisheries. Terrestrial and polar regime shifts tended to have fewer and more specific sets of drivers. Large scale regime shifts in polar and sub-continental areas (e.g. Monsoon weakening) have fewer drivers but are hotspots of sharing, typically including climate related drivers. Drivers that co-occurred most frequently were related to food production, climate change and urbanization, yet none of them is ubiquitous in our sample (Fig. 3B).
@@ -203,7 +203,7 @@ In line with our expectations, regime shifts were more likely to share drivers w
 
 ```{r Fig3, cache = TRUE, echo = FALSE, error=FALSE, warning=FALSE, message=FALSE, fig.height = 6, fig.width = 4.75, dev.args = list(pointsize= 6), fig.align='center', fig.cap = 'Patterns of cascading effects. Regime shifts are ranked according to their role in (A) driver sharing, (C) domino effect, and (E) hidden feedbacks. Key variables involved on cascading effects are shown in (B) for driver sharing, (D) domino effects, and (F) hidden feedbacks. The distribution of drivers shared per regime shift (A) with respect to the number of drivers each one has (black points) shows that regime shifts in aquatic environments tend to have and share more drivers. WAIS abbreviates West Antarctica Ice Sheet collapse. Regime shifts that produce most domino effects (high outdegree) are Earth system tipping points, while the regime shifts that receive the most (high indegree) occur in aquatic and land-water interface (C); labels are plotted only for regime shifts where the maximum number of domino effects (4) is found. Most variables associated with domino effects are related to climate and transport mechanisms (D). These variables are part of a feedback mechanism in one regime shift that are in turn drivers in another regime shift. Hidden feedbacks occur typically in terrestrial and Earth system regime shifts. (E) shows the distributions of hidden feedbacks organized by higher to lower mean number of feedbacks. Boxplots are shown in log-scale after zero values have been removed. The variables most often involved in hidden feedbacks have high betweenness and closeness centralities (F) calculated on the network of all regime shifts in our sample (N = 30). These measures reveal the variables (labeled) that lie on most shorter pathways from all other variables in the network.', dev = "pdf", dpi = 300}
 
-#knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_Fig2.pdf")
+knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_Fig2.pdf")
 
 # Statistical models summary. The response variables are the matrices of regime shifts interconnections for each cascading effect type (Fig 1). The terms fitted correspond to the categorical variables from the regime-shifts database (Table S2) that capture the similarity of regime shifts regarding their impacts on ecosystem services and human well being, the scales at which they occur, reversibility and evidence type (See SM Methods). Results from exponential random graph models are interpreted similarly to those of logistic regression where the non-zero and sum terms are the equivalent of an intercept. The non-zero term is the likelihood of the existence of a link in the response variable network, while the sum corresponds to its weight. Only best models are shown (lowest AIC or BIC), for complete results of null and alternative models fitted see Tables S3, S4 and S5.
 
@@ -211,7 +211,7 @@ In line with our expectations, regime shifts were more likely to share drivers w
 
 ```{r Fig4, cache = TRUE, echo = FALSE, error=FALSE,  warning=FALSE, message=FALSE, fig.height = 6, fig.width = 4.75, dev.args = list(pointsize= 6), fig.align='center', fig.cap = 'Cascading effects across scales. Summary of the statistical results (A), only models with the lower AIC were included on the figure. Tables S3-S5 complements the figure with alternative models fitted. Circular plots in (B-J) shows the mixing matrices of cascading effects (driver sharing B,C,H, domino effects C,F,I, hidden feedbacks D,G,J) according to ecosystem type (B,C,D), spatial scales (E,F,G), and temporal scales (H,I,J).', dev = "pdf", dpi = 300}
 
-#knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_Fig3.pdf")
+knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_Fig3.pdf")
 
 
 ```
@@ -397,7 +397,7 @@ _Hidden feedbacks:_ We explored hidden feedbacks by pairwise comparison of causa
 
 ```{r matrixes_fig, cache = TRUE, echo = FALSE, error=FALSE, warning=FALSE, message=FALSE, fig.height = 7, fig.width = 7, dev.args = list(pointsize= 6), fig.align='left', fig.cap = 'Fig S3. Response variable matrices and summary of all cascading effects. (A) shows the controling case of driver sharing, (B) the resulting matrix for domino effects, (C) for hidden feedbacks, and (D) summarizes the results by combining the three matrixes.', dev = "pdf", dpi = 300, fig.lp = ""}
 
-#knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_FigS3.pdf")
+knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_FigS3.pdf")
 ```
 ### A worked example
 
@@ -412,7 +412,7 @@ For the controlling case of driver sharing, we simply count the number of common
 
 ```{r FigS4, cache = TRUE, echo = FALSE, error=FALSE, warning=FALSE, message=FALSE, fig.height = 6, fig.width = 7, dev.args = list(pointsize= 7), fig.align='center', fig.cap = 'Fig S4. Identifying cascading effects. A worked example for identification of a domino effect bewteen coral transitions and mangrove transition (A); and a hidden feedback between Arctic sea ice loss and coniferous to deciduous forests (B).', fig.lp = ""}
 
-#knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_FigS4.pdf")
+knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_FigS4.pdf")
 
 ```
 
@@ -435,7 +435,7 @@ All models showed that reversibility and evidence type were significant predicto
 
 ```{r FigS5, cache = TRUE, echo = FALSE, error=FALSE, warning=FALSE, message=FALSE, fig.height = 2, fig.width = 7, dev.args = list(pointsize= 7), fig.align='center', fig.cap = 'Fig S5. Reversibility and evidence type.', fig.lp = ""}
 
-# knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_FigS5.pdf")
+ knitr::include_graphics(path = "~/Documents/Projects/Cascading Effects/Figures/Cascading_FigS5.pdf")
 
 ```
 
@@ -445,7 +445,7 @@ All models showed that reversibility and evidence type were significant predicto
 ```{r tableSM2, message = FALSE, warning = FALSE, echo = FALSE, results='asis'}
 
 suppressMessages(stargazer::stargazer(fit.null1, fit.w1, fit.w1a,
-    align = F, header = F, type = 'html', digits = 2,
+    align = F, header = F, type = 'latex', digits = 2,
     float = F, no.space = T, single.row = T, font.size = "footnotesize",
     title = "Table S2. Exponential random graph models for shared drivers (\textit{number of drivers shared})",
     covariate.labels = c("Non zero", "Sum", "Land use", "Ecosystem type", "Ecosystem processes",
@@ -469,8 +469,9 @@ suppressMessages(stargazer::stargazer(fit.null1, fit.w1, fit.w1a,
 
 **Table S4.** Exponential random graph models for \textit{domino effects}
 ```{r tableSM3, message = FALSE, warning = FALSE, echo = FALSE, results='asis'}
+
 suppressMessages(stargazer::stargazer( fit.null2, fit.w2, fit.w2a, fit.w2b,
-    align = F, header = F, type = 'html', digits = 2,
+    align = F, header = F, type = 'latex', digits = 2,
     float = F, no.space = T, single.row = T, font.size = "footnotesize",
     title = "Table S3. Exponential random graph models for \textit{domino effects}",
     covariate.labels = c("Non zero", "Sum", "Land use", "Ecosystem type", "Ecosystem processes",
@@ -503,7 +504,7 @@ suppressMessages(stargazer::stargazer( fit.null2, fit.w2, fit.w2a, fit.w2b,
 ```{r tableSM4, message = FALSE, warning = FALSE, echo = FALSE, results='asis'}
 
 suppressMessages(stargazer::stargazer(fit.null3, fit.w3, fit.w3a,
-    align = F, header = F,  type = 'html', digits = 2,
+    align = F, header = F,  type = 'latex', digits = 2,
     float = F, no.space = T, single.row = T, font.size = "footnotesize",
     title = "Table S4. Exponential random graph models for \textit{hidden feedbacks}",
     covariate.labels = c("Non zero", "Sum", "Land use", "Ecosystem type", "Ecosystem processes",
