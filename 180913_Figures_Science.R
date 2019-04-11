@@ -38,14 +38,14 @@ library(kableExtra)
 # this loads the data, it was cleaned and prepared with script 170329_read_data.R
 # and load the ergm models fitted with script 170329_ergms.R
 
-load('~/Documents/Projects/Cascading Effects/181001_ergm_data.RData')
+load('~/Documents/Projects/Cascading Effects/data/181001_ergm_data.RData')
 
 
 #### Figure 1. Scheme with minimal examples:
 ## Changes needed: thicker lines, change orientation to align all networks.
 
 # load mini data
-mini_dat <- readr::read_csv2("~/Documents/Projects/Cascading Effects/minimal_example_cld_cascading_effects.csv")
+mini_dat <- readr::read_csv2("~/Documents/Projects/Cascading Effects/data/minimal_example_cld_cascading_effects.csv")
 
 setwd("~/Documents/Projects/Cascading Effects/Figures")
 
@@ -364,7 +364,7 @@ pp <- ggmatrix(
 
 quartz(width = 4.75, height = 3.75, pointsize = 7)
 pp + theme(strip.text = element_text(size = 7))
-ggsave("Cascading_Fig1.pdf", device = "pdf")
+ggsave("Cascading_Fig1.png", device = "png")
 
 #################################################
 ####### Figure 2
@@ -711,7 +711,11 @@ multiplot(plotlist = gg, layout = layout)
 
 
 # ggsave("Cascading_Fig2.pdf", plot = multiplot(plotlist = gg, layout = layout))
-quartz.save("Cascading_Fig2.pdf", type = "pdf", dpi = 600, bg = "white")
+quartz.save("Cascading_Fig2_EF.png", type = "png", dpi = 600, bg = "white")
+
+### Smaller versions for talks:
+quartz(width = 4.75, height = 2, pointsize = 5)
+multiplot(plotlist = list(g5, g6), layout = matrix(1:2, ncol = 2, nrow =1))
 
 
 ### For SI, make a worked examples with two real networks.
@@ -823,7 +827,7 @@ layout <- matrix(c(rep(1,6), 2,2,3), ncol = 3, nrow = 3, byrow = FALSE)
 multiplot(plotlist = gg, layout = layout)
 
 
-quartz.save("Cascading_FigSummary.pdf", type = "pdf", dpi = 600, bg = "white")
+quartz.save("Cascading_FigSummary.png", type = "png", dpi = 600, bg = "white")
 ###### Circlos
 
 
@@ -1264,6 +1268,10 @@ multiplot(plotlist = gg, layout = layout)
 quartz.save("Cascading_Fig3.pdf", type = "pdf", width = 4.75, height = 6, pointsize = 8)
 
 
+## for talks
+quartz(width = 4.75, height = 3, pointsize = 8)
+p
+quartz.save("Cascading_Fig3_a.png", type = "png", width = 4.75, height = 3, pointsize = 8, dpi = 600)
 
 #### SM matrices figures
 
@@ -1285,7 +1293,7 @@ quartz(width = 7, height = 7, pointsize = 7)
 
 multiplot(plotlist = list(m1,m2,m3,m4), layout = matrix(1:4,2,2, byrow = T))
 
-quartz.save("Cascading_FigS3.pdf", width = 7, height = 7, pointsize = 7, type = "pdf")
+quartz.save("Cascading_FigS3.png", width = 7, height = 7, pointsize = 7, type = "png")
 
 
 
@@ -1455,7 +1463,7 @@ plot.network(
     main = "Hidden feedback", col.main = "grey11", cex.main = 1.25
 )
 
-quartz.save("Cascading_FigS4.pdf", width = 7, height = 4, pointsize = 7, type = "pdf")
+quartz.save("Cascading_FigS4.png", width = 7, height = 4, pointsize = 7, type = "png", dpi = 600)
 
 
 
